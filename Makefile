@@ -38,6 +38,8 @@ all: $(MYLIB)
 $(MYLIB): $(OBJSC) $(SRCSC) $(HEADERS)
 	ar rcs $(MYLIB) $(OBJSC)
 	ranlib $(MYLIB)
+	cp $(HEADERS) ./include/
+	cp $(MYLIB) ./lib/
 
 # *.c file commpare
 $(OBJSC): $(SRCSC) $(HEADERS)
@@ -48,3 +50,5 @@ $(OBJSC): $(SRCSC) $(HEADERS)
 clean:
 	rm -rf $(OBJDIR)
 	rm -f *.o *.a
+	rm -rf ./include/*
+	rm -rf ./lib/*
