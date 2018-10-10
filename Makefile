@@ -6,7 +6,7 @@ PWD=$(shell pwd)
 MYLIB = hpslib.a
 
 # change to you project file dir
-VPATH = common:test
+VPATH = common:test:config
 	# the obj dir
 	OBJDIR = obj
 
@@ -24,14 +24,7 @@ CC = gcc
 INCS = $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 	CFLAGS += $(INCS)
 
-LIBS += -lncurses -lesl -lpthread -lm
-LDFLAGS += -L.
-PICKY = -O2
-#SOLINK = -shared -Xlinker -x
-
-#DEBUG = -g -ggdb
-#LIBEDIT_DIR = ./
-
+DEBUG = -g -ggdb
 
 all: $(MYLIB)
 
@@ -44,7 +37,7 @@ $(MYLIB): $(OBJSC) $(SRCSC) $(HEADERS)
 # *.c file commpare
 $(OBJSC): $(SRCSC) $(HEADERS)
 	@test -d $(OBJDIR) | mkdir -p $(OBJDIR)
-	$(CC) -c $(SRCSC) $(INCS)
+	$(CC) -c $(SRCSC) $(INCS)  $(DEBUG)
 	mv *.o $(OBJDIR)/
 
 clean:
