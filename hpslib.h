@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 
-int libtest ()
+int libtest()
 {
-    print ("test lib!\n");
+    printf("test lib!\n");
 }
