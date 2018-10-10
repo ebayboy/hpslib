@@ -8,8 +8,6 @@ all: static_library
 static_library: 
 	gcc -c *.c;
 	ar  -cr $(STATIC_NAME) *.o;
-
-install:
 	rm -rf ./lib/* ./include/*
 	cp -af *.a ./lib/
 	cp -af *.h ./include/
