@@ -24,7 +24,7 @@ CC = gcc
 INCS = $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 	CFLAGS += $(INCS)
 
-DEBUG = -g -ggdb
+DEBUG = -g -ggdb -DDEBUG
 
 all: $(MYLIB)
 
