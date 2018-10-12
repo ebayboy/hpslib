@@ -10,28 +10,34 @@ int cfg_parser_parse_secrule()
     printf("json_string:[%s]\n", json_string);
 
     //JSON字符串到cJSON格式
-    cJSON* cjson = cJSON_Parse(json_string); 
+    cJSON* root = cJSON_Parse(json_string); 
     //判断cJSON_Parse函数返回值确定是否打包成功
-    if(cjson == NULL){
-        printf("Error: json pack into cjson error...");
+    if(root == NULL){
+        printf("Error: json pack into root error...");
         return -1;
     } else{//打包成功调用cJSON_Print打印输出
-        cJSON_Print(cjson);
+        cJSON_Print(root);
     }
 
     //获取字段值
     //cJSON_GetObjectItem返回的是一个cJSON结构体所以我们可以通过函数返回结构体的方式选择返回类型！
-    cJSON * test_1 = cJSON_GetObjectItem(cjson,"test_1");
-    cJSON * test_2 = cJSON_GetObjectItem(cjson,"test_2");
-    cJSON * test_3 = cJSON_GetObjectItem(cjson,"test_3");
+    cJSON * test_1 = cJSON_GetObjectItem(root,"test_1");
+    cJSON * test_2 = cJSON_GetObjectItem(root,"test_2");
+    cJSON * test_3 = cJSON_GetObjectItem(root,"test_3");
 
     //打印输出
-    printf("%s",test_1->valuestring);
-    printf("%s",test_2->valuestring);
-    printf("%s",test_3->valuestring);
+    if (test_1) {
+        printf("%s",test_1->valuestring);
+    }
+    if (test_2) {
+        printf("%s",test_2->valuestring);
+    }
+    if (test_3) {
+        printf("%s",test_3->valuestring);
+    }
 
-    //delete cjson
-    cJSON_Delete(cjson);
+    //delete root
+    cJSON_Delete(root);
 
 }
 
