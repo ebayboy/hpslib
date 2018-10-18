@@ -11,10 +11,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <cJSON.h>
 
 #include "common.h"
+#include "cfg_parser.h"
 
 static int cfg_parser_parse_demo()
 {
@@ -54,17 +56,38 @@ static int cfg_parser_parse_demo()
     cJSON_Delete(root);
 }
 
-static int cfg_parser_parse_secrule()
+static int cfg_parser_parse_secrule(cJSON *root)
 {
+    cJSON *secrule_root, *rules;
+
+    secrule_root = cJSON_GetObjectItem(root, "SecRule");
+    if (secrule_root == NULL) {
+        return -1;
+    }
+
+    int size;
+    rules = cJSON_GetObjectItem(secrule_root, "Rules");
+    if (rules == NULL) {
+        return -1;
+    }
+    size = cJSON_GetArraySize(rules);
+
+    printf("rule size:%d\n", size);
+
+#if 0
+    int i;
+    rule_item  = cJSON_GetArrayItem(rules, i);
+#endif
 
     return 0;
 }
 
 int cfg_parser_parse(const char *filename)
 {
-    int rc = 0;
+    int rc = 0, ret = 0;
     long flen;
-    FILE *fp;
+    FILE *fp = NULL;
+    char *buff = NULL;
 
     if (filename == NULL || strlen(filename) == 0) {
         return -1;
@@ -80,16 +103,69 @@ int cfg_parser_parse(const char *filename)
 
     PR("flen:%d\n", flen);
 
+    if ((buff = (char*)malloc(flen+1)) == NULL) {
+        ret = -1;
+        goto out;
+    }
+    memset(buff, 0, sizeof(buff));
+
+    if (fread(buff, flen, 1, fp) != 1) {
+        ret = -1;
+        goto out;
+    }
+
 #ifdef DEBUG
     if ((rc = cfg_parser_parse_demo()) != 0) {
-        return rc;
+        ret = -1;
+        goto out;
     }
 #endif
 
-    if ((rc = cfg_parser_parse_secrule()) != 0) {
-        return rc;
+    cJSON *root, *item;
+    if ((root = cJSON_Parse(buff)) == NULL) {
+        ret = -1;
+        goto out;
+    }
+
+    waf_t waf;
+    memset(&waf, 0, sizeof(waf));
+
+    cJSON *it;
+    
+    if ((it = cJSON_GetObjectItem(root,"WafEngine")) != NULL) {
+        if (strcasecmp(it->valuestring, "on") == 0) {
+            waf.waf_engine = WAF_ENGINE_ON;
+        } else {
+            waf.waf_engine = WAF_ENGINE_OFF;
+        }
+    }
+
+    if ((it = cJSON_GetObjectItem(root,"WafAction")) != NULL) {
+        if (strcasecmp(it->valuestring, "block") == 0) {
+            waf.waf_action = WAF_ACT_BLOCK;
+        } else if (strcasecmp(it->valuestring, "log") == 0) {
+            waf.waf_action = WAF_ACT_LOG;
+        } else if (strcasecmp(it->valuestring, "pass") == 0) {
+            waf.waf_action = WAF_ACT_LOG;
+        } else {
+            waf.waf_action = WAF_ACT_NONE;
+        }
+    }
+ 
+    if ((it = cJSON_GetObjectItem(root,"WafId")) != NULL) {
+        strncpy(waf.waf_id, it->valuestring, sizeof(waf.waf_id) - 1);
+    }
+
+    if ((rc = cfg_parser_parse_secrule(root)) != 0) {
+        ret = -1;
+        goto out;
+    }
+
+out:
+    if (fp) {
+        fclose(fp);
     }
     
-    return 0;
+    return ret;
 }
 
