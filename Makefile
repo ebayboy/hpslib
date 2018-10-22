@@ -1,12 +1,12 @@
 
 PWD=$(shell pwd)
-#INCS=-I$(PWD)/include
+INCS=-I$(PWD)/include -I$(PWD)/hyperscan/include/
 
 # change to you project name
 MYLIB = hpslib.a
 
 # change to you project file dir
-VPATH = common:test:config
+VPATH = common:test:config:filter
 	# the obj dir
 	OBJDIR = obj
 
@@ -21,7 +21,7 @@ SRCSC = $(foreach dir,$(subst :, ,$(VPATH)),$(wildcard $(dir)/*.c))
 	HEADERS = $(foreach dir,$(subst :, ,$(VPATH)),$(wildcard $(dir)/*.h))
 
 CC = gcc
-INCS = $(patsubst %,-I%,$(subst :, ,$(VPATH)))
+INCS += $(patsubst %,-I%,$(subst :, ,$(VPATH)))
 	CFLAGS += $(INCS)
 
 DEBUG = -g -ggdb -DDEBUG
