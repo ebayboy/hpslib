@@ -2,12 +2,13 @@
 #ifndef __CFG_PARSER_H__
 #define __CFG_PARSER_H__
 
-#define WAF_ID_MAX       64
+#define WAF_ID_LEN          64
 
-#define WAF_RULES_MAX       1024
-#define WAF_RULE_ID_MAX     64
-#define WAF_RULE_MZ_MAX     1024
-#define WAF_RULE_RX_MAX     4096
+#define WAF_RULES_MAX       4096
+
+#define WAF_RULE_ID_LEN     64
+#define WAF_RULE_MZ_LEN     1024
+#define WAF_RULE_RX_LEN     4096
 
 typedef enum {
     WAF_ENGINE_OFF = 0, 
@@ -22,22 +23,26 @@ typedef enum {
     WAF_ACT_MAX
 } waf_action_e;
 
-typedef struct _waf_rules_t {
-    char id[WAF_RULE_ID_MAX];
-    char mz[WAF_RULE_MZ_MAX];
-    char rx[WAF_RULE_RX_MAX];
+typedef struct {
+    char id[WAF_RULE_ID_LEN];
+    char mz[WAF_RULE_MZ_LEN];
+    char rx[WAF_RULE_RX_LEN];
 } waf_rule_t;
 
-typedef struct _cfgwaf_s {
+typedef struct {
     waf_engine_e waf_engine;
     waf_action_e waf_action;
-    char waf_id[WAF_ID_MAX];
-   
+    char waf_id[WAF_ID_LEN];
+  
     waf_rule_t rules[WAF_RULES_MAX];
 } waf_t;
 
-int cfg_parser_parse(const char *filename);
-int cfg_parser_parse2(const char *filename);
+
+typedef struct {
+    char waf_id[8553600];
+} waf2_t;
+
+int cfg_parser_parse(const char *filename, waf_t *waf);
 
 #endif
 

@@ -101,22 +101,16 @@ out:
     return ret;
 }
 
-
-int cfg_parser_parse2(const char *filename)
-{
-    PR("filename:%s\n", filename);
-
-    return 0;
-}
-
-int cfg_parser_parse(const char *filename)
+int cfg_parser_parse(const char *filename, waf_t *waf)
 {
     int rc = 0, ret = 0;
+
+    printf("size:%d\n", sizeof(waf_rule_t) * WAF_RULES_MAX);
+
     long temp_len = 0;
     FILE *fp = NULL;
     char *temp = NULL;
     cJSON *root = NULL, *it = NULL;
-    waf_t waf;
 
     PR("filename:%s\n", filename);
 
@@ -133,7 +127,6 @@ int cfg_parser_parse(const char *filename)
     }
 
     PR("temp_len:%d\n", temp_len);
-
     if ((temp = (char*)malloc(temp_len + 1)) == NULL) {
         ret = -1;
         goto out;
@@ -159,33 +152,31 @@ int cfg_parser_parse(const char *filename)
         goto out;
     }
 
-    memset(&waf, 0, sizeof(waf));
-
     if ((it = cJSON_GetObjectItem(root,"WafEngine")) != NULL) {
         if (strcasecmp(it->valuestring, "on") == 0) {
-            waf.waf_engine = WAF_ENGINE_ON;
+            waf->waf_engine = WAF_ENGINE_ON;
         } else {
-            waf.waf_engine = WAF_ENGINE_OFF;
+            waf->waf_engine = WAF_ENGINE_OFF;
         }
     }
 
     if ((it = cJSON_GetObjectItem(root,"WafAction")) != NULL) {
         if (strcasecmp(it->valuestring, "block") == 0) {
-            waf.waf_action = WAF_ACT_BLOCK;
+            waf->waf_action = WAF_ACT_BLOCK;
         } else if (strcasecmp(it->valuestring, "log") == 0) {
-            waf.waf_action = WAF_ACT_LOG;
+            waf->waf_action = WAF_ACT_LOG;
         } else if (strcasecmp(it->valuestring, "pass") == 0) {
-            waf.waf_action = WAF_ACT_LOG;
+            waf->waf_action = WAF_ACT_LOG;
         } else {
-            waf.waf_action = WAF_ACT_NONE;
+            waf->waf_action = WAF_ACT_NONE;
         }
     }
  
     if ((it = cJSON_GetObjectItem(root,"WafId")) != NULL) {
-        strncpy(waf.waf_id, it->valuestring, sizeof(waf.waf_id) - 1);
+        strncpy(waf->waf_id, it->valuestring, sizeof(waf->waf_id) - 1);
     }
 
-    if ((rc = cfg_parser_parse_secrule(root, &waf)) != 0) {
+    if ((rc = cfg_parser_parse_secrule(root, waf)) != 0) {
         ret = -1;
         goto out;
     }
