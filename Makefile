@@ -33,6 +33,8 @@ $(MYLIB): $(OBJSC) $(SRCSC) $(HEADERS)
 	ranlib $(MYLIB)
 	cp $(HEADERS) ./include/
 	cp $(MYLIB) ./lib/
+	cp hyperscan/include/* ./include/
+	cp hyperscan/lib/* ./lib/
 
 # *.c file commpare
 $(OBJSC): $(SRCSC) $(HEADERS)
