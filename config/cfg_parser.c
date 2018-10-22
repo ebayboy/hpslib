@@ -18,10 +18,12 @@
 #include "common.h"
 #include "cfg_parser.h"
 
-static int cfg_parser_parse_demo()
+static int cfg_parser_parse_demo(const char *filename)
 {
     //用char* 模拟一个JSON字符串
     char* json_string = "{\"test_1\":\"0\", \"test_2\":\"1\", \"test_3\":\"2\"}";
+
+    PR("filename:[%s]\n", filename);
 
     PR("json_string:[%s]\n", json_string);
 
@@ -82,12 +84,24 @@ static int cfg_parser_parse_secrule(cJSON *root)
     return 0;
 }
 
+
+int cfg_parser_parse2(const char *filename)
+{
+    PR("filename:%s\n", filename);
+
+    return 0;
+}
+
 int cfg_parser_parse(const char *filename)
 {
     int rc = 0, ret = 0;
-    long flen;
+    long flen = 0;
     FILE *fp = NULL;
-    char *buff = NULL;
+    char *temp = NULL;
+    cJSON *root = NULL, *it = NULL;
+    waf_t waf;
+
+    PR("filename:%s\n", filename);
 
     if (filename == NULL || strlen(filename) == 0) {
         return -1;
@@ -103,35 +117,33 @@ int cfg_parser_parse(const char *filename)
 
     PR("flen:%d\n", flen);
 
-    if ((buff = (char*)malloc(flen+1)) == NULL) {
+    if ((temp = (char*)malloc(flen+1)) == NULL) {
         ret = -1;
         goto out;
     }
-    memset(buff, 0, sizeof(buff));
+    memset(temp, 0, sizeof(temp));
 
-    if (fread(buff, flen, 1, fp) != 1) {
+    if (fread(temp, flen, 1, fp) != 1) {
         ret = -1;
         goto out;
     }
 
 #ifdef DEBUG
-    if ((rc = cfg_parser_parse_demo()) != 0) {
+    if ((rc = cfg_parser_parse_demo(filename)) != 0) {
         ret = -1;
         goto out;
     }
 #endif
 
-    cJSON *root, *item;
-    if ((root = cJSON_Parse(buff)) == NULL) {
+    PR("temp:[%s]\n", temp);
+
+    if ((root = cJSON_Parse(temp)) == NULL) {
         ret = -1;
         goto out;
     }
 
-    waf_t waf;
     memset(&waf, 0, sizeof(waf));
 
-    cJSON *it;
-    
     if ((it = cJSON_GetObjectItem(root,"WafEngine")) != NULL) {
         if (strcasecmp(it->valuestring, "on") == 0) {
             waf.waf_engine = WAF_ENGINE_ON;
@@ -164,6 +176,14 @@ int cfg_parser_parse(const char *filename)
 out:
     if (fp) {
         fclose(fp);
+    }
+
+    if (root) {
+        cJSON_Delete(root);
+    }
+
+    if (temp) {
+        free(temp);
     }
     
     return ret;

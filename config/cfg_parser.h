@@ -23,8 +23,8 @@ typedef enum {
 
 typedef struct _waf_rules_t {
     int id;
-    char *mz[WAF_RULE_MZ_MAX];
-    char *rx[WAF_RULE_RX_MAX];
+    char mz[WAF_RULE_MZ_MAX];
+    char rx[WAF_RULE_RX_MAX];
 } waf_rule_t;
 
 typedef struct _cfgwaf_s {
@@ -36,6 +36,7 @@ typedef struct _cfgwaf_s {
 } waf_t;
 
 int cfg_parser_parse(const char *filename);
+int cfg_parser_parse2(const char *filename);
 
 #endif
 

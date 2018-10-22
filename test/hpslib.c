@@ -12,8 +12,7 @@
 #ifndef __HPSLIB_H__
 #define __HPSLIB_H__
 
-int libtest();
-
+int libtest(const char *filename);
 
 #endif
 

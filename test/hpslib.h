@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 
-int libtest()
+int libtest(const char *filename)
 {
-    printf("test lib!\n");
+    printf("test lib! filename:[%s]\n", filename);
 }
