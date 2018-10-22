@@ -6,7 +6,7 @@
 long fsize(FILE *fp);
 
 #ifdef DEBUG 
-#define PR(...) printf(__VA_ARGS__)
+#define PR(...) printf("[%s:%d] ", __func__, __LINE__); printf(__VA_ARGS__)
 #else
 #define PR(...)
 #endif

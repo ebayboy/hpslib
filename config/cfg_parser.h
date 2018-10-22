@@ -5,6 +5,7 @@
 #define WAF_ID_MAX       64
 
 #define WAF_RULES_MAX       1024
+#define WAF_RULE_ID_MAX     64
 #define WAF_RULE_MZ_MAX     1024
 #define WAF_RULE_RX_MAX     4096
 
@@ -22,7 +23,7 @@ typedef enum {
 } waf_action_e;
 
 typedef struct _waf_rules_t {
-    int id;
+    char id[WAF_RULE_ID_MAX];
     char mz[WAF_RULE_MZ_MAX];
     char rx[WAF_RULE_RX_MAX];
 } waf_rule_t;

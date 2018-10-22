@@ -58,30 +58,47 @@ static int cfg_parser_parse_demo(const char *filename)
     cJSON_Delete(root);
 }
 
-static int cfg_parser_parse_secrule(cJSON *root)
+static int cfg_parser_parse_secrule(cJSON *root, waf_t *waf)
 {
-    cJSON *secrule_root, *rules;
+    cJSON *secrule_root, *rules, *rule, *rule_it;
+    int i = 0, size = 0, ret = 0;
 
     secrule_root = cJSON_GetObjectItem(root, "SecRule");
     if (secrule_root == NULL) {
         return -1;
     }
 
-    int size;
     rules = cJSON_GetObjectItem(secrule_root, "Rules");
     if (rules == NULL) {
         return -1;
     }
     size = cJSON_GetArraySize(rules);
+    printf("rules count:%d\n", size);
 
-    printf("rule size:%d\n", size);
+#define WAF_RULE_ITEM(x) \
+    do  {   \
+        if ((rule_it = cJSON_GetObjectItem(rule,#x)) == NULL) {    \
+            ret = -1;   \
+            goto out;   \
+        } \
+        strncpy(waf->rules[i].x, rule_it->valuestring, sizeof(waf->rules[i].x) - 1);  \
+    } while (0)
 
-#if 0
-    int i;
-    rule_item  = cJSON_GetArrayItem(rules, i);
-#endif
 
-    return 0;
+    for (i = 0; i < size; i++) {
+        rule  = cJSON_GetArrayItem(rules, i);
+        WAF_RULE_ITEM(id);
+        WAF_RULE_ITEM(mz);
+        WAF_RULE_ITEM(rx);
+
+        PR("id:%s mz:[%s] rx:[%s]\n", waf->rules[i].id, waf->rules[i].mz, waf->rules[i].rx);
+    }
+
+out:
+#undef WAF_RULE_ITEM
+
+    PR("ret:%d\n", ret);
+    return ret;
 }
 
 
@@ -95,7 +112,7 @@ int cfg_parser_parse2(const char *filename)
 int cfg_parser_parse(const char *filename)
 {
     int rc = 0, ret = 0;
-    long flen = 0;
+    long temp_len = 0;
     FILE *fp = NULL;
     char *temp = NULL;
     cJSON *root = NULL, *it = NULL;
@@ -111,19 +128,19 @@ int cfg_parser_parse(const char *filename)
         return -1;
     }
 
-    if ((flen = fsize(fp)) == -1) {
+    if ((temp_len = fsize(fp)) == -1) {
         return -1;
     }
 
-    PR("flen:%d\n", flen);
+    PR("temp_len:%d\n", temp_len);
 
-    if ((temp = (char*)malloc(flen+1)) == NULL) {
+    if ((temp = (char*)malloc(temp_len + 1)) == NULL) {
         ret = -1;
         goto out;
     }
     memset(temp, 0, sizeof(temp));
 
-    if (fread(temp, flen, 1, fp) != 1) {
+    if (fread(temp, temp_len, 1, fp) != 1) {
         ret = -1;
         goto out;
     }
@@ -168,7 +185,7 @@ int cfg_parser_parse(const char *filename)
         strncpy(waf.waf_id, it->valuestring, sizeof(waf.waf_id) - 1);
     }
 
-    if ((rc = cfg_parser_parse_secrule(root)) != 0) {
+    if ((rc = cfg_parser_parse_secrule(root, &waf)) != 0) {
         ret = -1;
         goto out;
     }
