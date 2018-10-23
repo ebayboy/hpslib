@@ -6,7 +6,7 @@ INCS= -I$(PWD)/hyperscan/include/
 MYLIB = hpslib.a
 
 # change to you project file dir
-VPATH = common:test:config:filter:log:waf
+VPATH = common:test:config:filter:log:waf:match
 	# the obj dir
 	OBJDIR = obj
 
