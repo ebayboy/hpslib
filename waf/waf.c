@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "waf.h"
 
 static int waf_logger_init(const char *logfile, waf_t *waf)
 {
