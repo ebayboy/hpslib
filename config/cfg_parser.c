@@ -17,21 +17,22 @@
 
 #include "common.h"
 #include "cfg_parser.h"
+#include "log.h"
 
 static int cfg_parser_parse_demo(const char *filename)
 {
     //用char* 模拟一个JSON字符串
     char* json_string = "{\"test_1\":\"0\", \"test_2\":\"1\", \"test_3\":\"2\"}";
 
-    PR("filename:[%s]\n", filename);
+    log_error("filename:[%s]\n", filename);
 
-    PR("json_string:[%s]\n", json_string);
+    log_error("json_string:[%s]\n", json_string);
 
     //JSON字符串到cJSON格式
     cJSON* root = cJSON_Parse(json_string); 
     //判断cJSON_Parse函数返回值确定是否打包成功
     if(root == NULL){
-        PR("Error: json pack into root error...");
+        log_error("Error: json pack into root error...");
         return -1;
     } else{//打包成功调用cJSON_Print打印输出
         cJSON_Print(root);
@@ -45,13 +46,13 @@ static int cfg_parser_parse_demo(const char *filename)
 
     //打印输出
     if (test_1) {
-        PR("test_1:%s\n",test_1->valuestring);
+        log_error("test_1:%s\n",test_1->valuestring);
     }
     if (test_2) {
-        PR("test_2:%s\n",test_2->valuestring);
+        log_error("test_2:%s\n",test_2->valuestring);
     }
     if (test_3) {
-        PR("test_3:%s\n",test_3->valuestring);
+        log_error("test_3:%s\n",test_3->valuestring);
     }
 
     //delete root
@@ -91,13 +92,13 @@ static int cfg_parser_parse_secrule(cJSON *root, wafcfg_t *waf)
         WAF_RULE_ITEM(mz);
         WAF_RULE_ITEM(rx);
 
-        PR("id:%s mz:[%s] rx:[%s]\n", waf->rules[i].id, waf->rules[i].mz, waf->rules[i].rx);
+        log_error("id:%s mz:[%s] rx:[%s]\n", waf->rules[i].id, waf->rules[i].mz, waf->rules[i].rx);
     }
 
 out:
 #undef WAF_RULE_ITEM
 
-    PR("ret:%d\n", ret);
+    log_error("ret:%d\n", ret);
     return ret;
 }
 
@@ -112,7 +113,7 @@ int cfg_parser_parse(const char *filename, wafcfg_t *waf)
     char *temp = NULL;
     cJSON *root = NULL, *it = NULL;
 
-    PR("filename:%s\n", filename);
+    log_error("filename:%s\n", filename);
 
     if (filename == NULL || strlen(filename) == 0) {
         return -1;
@@ -126,7 +127,7 @@ int cfg_parser_parse(const char *filename, wafcfg_t *waf)
         return -1;
     }
 
-    PR("temp_len:%d\n", temp_len);
+    log_error("temp_len:%d\n", temp_len);
     if ((temp = (char*)malloc(temp_len + 1)) == NULL) {
         ret = -1;
         goto out;
@@ -145,7 +146,7 @@ int cfg_parser_parse(const char *filename, wafcfg_t *waf)
     }
 #endif
 
-    PR("temp:[%s]\n", temp);
+    log_error("temp:[%s]\n", temp);
 
     if ((root = cJSON_Parse(temp)) == NULL) {
         ret = -1;

@@ -2,7 +2,7 @@
 #ifndef __CFG_PARSER_H__
 #define __CFG_PARSER_H__
 
-#include "waf.h"
+#include "common.h"
 
 #define WAF_ID_LEN          64
 

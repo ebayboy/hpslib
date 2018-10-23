@@ -10,6 +10,7 @@
 
 #include "waf.h"
 #include "log.h"
+#include "common.h"
 
 typedef struct {
     hs_database_t *db;
