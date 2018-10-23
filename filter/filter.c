@@ -21,7 +21,7 @@ typedef struct {
     unsigned int patterns_size;
 } filter_t;
 
-void *waf_filter_new(void)
+void *filter_new(void)
 {
     filter_t *p = malloc(sizeof(filter_t));
     memset(p, 0, sizeof(filter_t));
@@ -40,7 +40,7 @@ void *waf_filter_new(void)
     return p;
 }
 
-void waf_filter_destroy(void *h)
+void filter_destroy(void *h)
 {
     unsigned int i = 0;
     filter_t *p = (filter_t *)h;
@@ -72,7 +72,7 @@ static int on_match(unsigned int id, unsigned long long from,
     return 0;
 }
 
-int waf_filter_addrule(void *x, int id, char *pattern)
+int filter_addrule(void *x, int id, char *pattern)
 {
     filter_t *f = (filter_t *) x;
     char *p;
@@ -95,7 +95,7 @@ int waf_filter_addrule(void *x, int id, char *pattern)
 
 }
 
-int waf_filter_compile(void *x) {
+int filter_compile(void *x) {
     filter_t *f = (filter_t *) x;
     hs_compile_error_t *compileErr = NULL;
     hs_error_t err;
@@ -118,7 +118,7 @@ int waf_filter_compile(void *x) {
     return 0;
 }
 
-int waf_filter_match(void *h, hs_scratch_t *scratch, char *buff, size_t len,
+int filter_match(void *h, hs_scratch_t *scratch, char *buff, size_t len,
         int *matched_rule_id)
 {
     filter_t *p = (filter_t *) h;
@@ -131,7 +131,7 @@ int waf_filter_match(void *h, hs_scratch_t *scratch, char *buff, size_t len,
     return *matched_rule_id;
 }
 
-int waf_filter_serialize(void *h, char **ptr, size_t *len)
+int filter_serialize(void *h, char **ptr, size_t *len)
 {
     filter_t *p = (filter_t *) h;
     if (hs_serialize_database(p->db, ptr, len) != HS_SUCCESS) {
@@ -140,7 +140,7 @@ int waf_filter_serialize(void *h, char **ptr, size_t *len)
     return 0;
 }
 
-int waf_filter_deserialize(void *h, char *ptr, size_t len)
+int filter_deserialize(void *h, char *ptr, size_t len)
 {
     filter_t *p = (filter_t *) h;
     if (hs_deserialize_database(ptr, len, &(p->db)) != HS_SUCCESS) {
@@ -151,7 +151,7 @@ int waf_filter_deserialize(void *h, char *ptr, size_t len)
     /* scratch alloc thread level */
 }
 
-int waf_filter_alloc_scratch(void *h, void **pp_scratch) {
+int filter_alloc_scratch(void *h, void **pp_scratch) {
     filter_t *p = (filter_t *) h;
     hs_error_t err = hs_alloc_scratch(p->db, (hs_scratch_t **)pp_scratch);
     if (err != HS_SUCCESS) {

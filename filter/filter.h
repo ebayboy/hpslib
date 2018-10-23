@@ -5,6 +5,5 @@
 
 
 typedef struct {
-    unsigned int magic;
 
-} waf_fitler_t;
+} fitler_t;
