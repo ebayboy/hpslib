@@ -9,5 +9,7 @@ typedef struct {
 
 int waf_init(const char *logfile);
 
+int waf_fini(void);
+
 #endif
 

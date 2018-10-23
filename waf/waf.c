@@ -5,6 +5,8 @@
 
 #include "waf.h"
 
+waf_t waf;
+
 static int waf_logger_init(const char *logfile, waf_t *waf)
 {
     FILE *fp = NULL;
@@ -19,21 +21,31 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
 
     waf->log_fp = fp;
 
+    log_set_fp(waf->log_fp);
+#ifndef DEBUG
+    log_set_quiet(1);
+#endif
+
     return 0;
 }
 
-
 int waf_init(const char *logfile)
 {
-    waf_t waf;
-
     memset(&waf, 0, sizeof(waf));
-
 
     if (waf_logger_init(logfile, &waf) == -1) {
         return -1;
     }
 
+
+    return 0;
+}
+
+int waf_fini(void)
+{
+    if (waf.log_fp != NULL) {
+        fclose(waf.log_fp);
+    }
 
     return 0;
 }
