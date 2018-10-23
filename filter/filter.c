@@ -9,6 +9,7 @@
 #include <hs.h>
 
 #include "waf.h"
+#include "log.h"
 
 typedef struct {
     hs_database_t *db;
@@ -103,9 +104,9 @@ int waf_filter_compile(void *x) {
 
     if (err != HS_SUCCESS) {
         if (compileErr->expression < 0) {
-            WAF_LOG(WAF_LOG_ERR, "%s", compileErr->message);
+            log_error("%s", compileErr->message);
         } else {
-            WAF_LOG(WAF_LOG_ERR, "ERROR: Pattern '%d' failed with error '%s'",
+            log_error("ERROR: Pattern '%d' failed with error '%s'",
                     f->ids[compileErr->expression], compileErr->message);
         }
         hs_free_compile_error(compileErr);

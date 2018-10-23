@@ -35,9 +35,9 @@ typedef struct {
     char waf_id[WAF_ID_LEN];
   
     waf_rule_t rules[WAF_RULES_MAX];
-} waf_t;
+} wafcfg_t;
 
-int cfg_parser_parse(const char *filename, waf_t *waf);
+int cfg_parser_parse(const char *filename, wafcfg_t *waf);
 
 #endif
 

@@ -58,7 +58,7 @@ static int cfg_parser_parse_demo(const char *filename)
     cJSON_Delete(root);
 }
 
-static int cfg_parser_parse_secrule(cJSON *root, waf_t *waf)
+static int cfg_parser_parse_secrule(cJSON *root, wafcfg_t *waf)
 {
     cJSON *secrule_root, *rules, *rule, *rule_it;
     int i = 0, size = 0, ret = 0;
@@ -101,7 +101,7 @@ out:
     return ret;
 }
 
-int cfg_parser_parse(const char *filename, waf_t *waf)
+int cfg_parser_parse(const char *filename, wafcfg_t *waf)
 {
     int rc = 0, ret = 0;
 
