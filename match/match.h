@@ -5,7 +5,7 @@
 #include "filter.h"
 
 typedef struct {
-    filter_t *h;                
+    filter_t *filter;                
     char mz[WAF_RULE_MZ_LEN];  
 } match_t;
 

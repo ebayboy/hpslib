@@ -4,19 +4,6 @@
 
 #include "common.h"
 
-typedef enum {
-    WAF_ENGINE_OFF = 0, 
-    WAF_ENGINE_ON = 1
-} waf_engine_e;
-
-typedef enum {
-    WAF_ACT_NONE = 0,
-    WAF_ACT_LOG,
-    WAF_ACT_PASS,
-    WAF_ACT_BLOCK,
-    WAF_ACT_MAX
-} waf_action_e;
-
 typedef struct {
     char id[WAF_RULE_ID_LEN];
     char mz[WAF_RULE_MZ_LEN];

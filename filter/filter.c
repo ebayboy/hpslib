@@ -12,16 +12,6 @@
 #include "log.h"
 #include "common.h"
 
-typedef struct {
-    hs_database_t *db;
-    /* hs_scratch_t *scratch;  // thread level */
-    hs_scratch_t *scratch;
-    int  *ids;
-    char **patterns;
-    int *flags;
-    unsigned int patterns_size;
-} filter_t;
-
 void *filter_new(void)
 {
     filter_t *p = malloc(sizeof(filter_t));
@@ -41,27 +31,27 @@ void *filter_new(void)
     return p;
 }
 
-void filter_destroy(void *h)
+void filter_destroy(filter_t *p)
 {
-    unsigned int i = 0;
-    filter_t *p = (filter_t *)h;
+    int i = 0;
 
-    /* scratch mem is managed outside for thread safety */
-    /*
-       if (p->scratch != NULL) {
-       hs_free_scratch(p->scratch);
-       }
-       */
+    if (p->scratch != NULL) {
+        hs_free_scratch(p->scratch);
+    }
+
     if (p->db != NULL) {
         hs_free_database(p->db);
     }
-    for (; i < p->patterns_size; i++) {
+
+    for (i = 0;i < p->patterns_size;i++ ) {
         free((void *) p->patterns[i]);
     }
+
     free((void *) p->patterns);
     free((void *) p->ids);
     free((void *) p->flags);
-    free(h);
+
+    free(p);
 }
 
 static int on_match(unsigned int id, unsigned long long from,
@@ -70,6 +60,7 @@ static int on_match(unsigned int id, unsigned long long from,
     if (ctx) {
         *(int*)ctx = id;
     }
+
     return 0;
 }
 
