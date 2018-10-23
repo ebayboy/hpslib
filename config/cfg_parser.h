@@ -2,9 +2,9 @@
 #ifndef __CFG_PARSER_H__
 #define __CFG_PARSER_H__
 
-#define WAF_ID_LEN          64
+#include "waf.h"
 
-#define WAF_RULES_MAX       4096
+#define WAF_ID_LEN          64
 
 #define WAF_RULE_ID_LEN     64
 #define WAF_RULE_MZ_LEN     1024
@@ -36,11 +36,6 @@ typedef struct {
   
     waf_rule_t rules[WAF_RULES_MAX];
 } waf_t;
-
-
-typedef struct {
-    char waf_id[8553600];
-} waf2_t;
 
 int cfg_parser_parse(const char *filename, waf_t *waf);
 
