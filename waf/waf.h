@@ -8,16 +8,8 @@
 #include "filter.h"
 
 typedef struct {
-    waf_engine_e waf_engine;
-    waf_action_e waf_action;
-    char waf_id[WAF_ID_LEN];
-
-    match_t matchers[WAF_MZ_MAX];
-
-} waf_match_t;
-
-typedef struct {
     FILE *log_fp;
+    waf_match_t waf_matcher;
 } waf_t;
 
 int waf_init(const char *logfile);
