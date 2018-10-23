@@ -15,6 +15,7 @@
 typedef struct {
     hs_database_t *db;
     /* hs_scratch_t *scratch;  // thread level */
+    hs_scratch_t *scratch;
     int  *ids;
     char **patterns;
     int *flags;
@@ -118,37 +119,21 @@ int filter_compile(void *x) {
     return 0;
 }
 
-int filter_match(void *h, hs_scratch_t *scratch, char *buff, size_t len,
+int filter_match(filter_t *p, hs_scratch_t *scratch, char *buff, size_t len,
         int *matched_rule_id)
 {
-    filter_t *p = (filter_t *) h;
     hs_error_t err;
+
+    if (p == NULL || scratch == NULL 
+            || buff == NULL  || len == 0) {
+        return -1;
+    }
 
     err = hs_scan(p->db, buff, len, 0, scratch, on_match, matched_rule_id);
     if (err != HS_SUCCESS) {
         return 0;
     }
     return *matched_rule_id;
-}
-
-int filter_serialize(void *h, char **ptr, size_t *len)
-{
-    filter_t *p = (filter_t *) h;
-    if (hs_serialize_database(p->db, ptr, len) != HS_SUCCESS) {
-        return -1;
-    }
-    return 0;
-}
-
-int filter_deserialize(void *h, char *ptr, size_t len)
-{
-    filter_t *p = (filter_t *) h;
-    if (hs_deserialize_database(ptr, len, &(p->db)) != HS_SUCCESS) {
-        return -1;
-    }
-
-    return 0;
-    /* scratch alloc thread level */
 }
 
 int filter_alloc_scratch(void *h, void **pp_scratch) {

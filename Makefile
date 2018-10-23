@@ -1,6 +1,6 @@
 
 PWD=$(shell pwd)
-INCS=-I$(PWD)/include -I$(PWD)/hyperscan/include/
+INCS= -I$(PWD)/hyperscan/include/
 
 # change to you project name
 MYLIB = hpslib.a

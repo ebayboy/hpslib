@@ -4,12 +4,6 @@
 
 #include "common.h"
 
-#define WAF_ID_LEN          64
-
-#define WAF_RULE_ID_LEN     64
-#define WAF_RULE_MZ_LEN     1024
-#define WAF_RULE_RX_LEN     4096
-
 typedef enum {
     WAF_ENGINE_OFF = 0, 
     WAF_ENGINE_ON = 1
