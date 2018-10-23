@@ -29,21 +29,6 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
     return 0;
 }
 
-int waf_init(const char *logfile, const char *waf_config_name)
-{
-    memset(&waf, 0, sizeof(waf));
-
-    /* logger init */
-    if (waf_logger_init(logfile, &waf) == -1) {
-        return -1;
-    }
-
-    /* config init */
-    waf_config_init(waf_config_name, &waf.waf_config);
-
-    return 0;
-}
-
 int waf_fini(void)
 {
     if (waf.log_fp != NULL) {
@@ -52,3 +37,26 @@ int waf_fini(void)
 
     return 0;
 }
+
+int waf_init(const char *logfile, const char *waf_config_name)
+{
+    memset(&waf, 0, sizeof(waf));
+
+    /* logger init */
+    if (waf_logger_init(logfile, &waf) == -1) {
+        goto error;
+    }
+
+    /* config init */
+    if (waf_config_init(waf_config_name, &waf.waf_config)) {
+        goto error;
+    }
+
+    return 0;
+
+error:
+
+    waf_fini();
+    return -1;
+}
+
