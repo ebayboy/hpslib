@@ -5,6 +5,7 @@
 
 #include "common.h"
 #include "match.h"
+#include "waf_match.h"
 #include "filter.h"
 #include "waf_config.h"
 

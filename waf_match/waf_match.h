@@ -9,7 +9,7 @@ typedef struct {
     waf_action_e waf_action;
     char waf_id[WAF_ID_LEN];
 
-    match_t matchers[WAF_MZ_MAX];
+    match_t *matchers[WAF_MZ_MAX]; /* WAF_MZ_MAX */
 
 } waf_match_t;
 

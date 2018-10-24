@@ -15,4 +15,8 @@ typedef struct {
     unsigned int patterns_size;
 } filter_t;
 
+filter_t * filter_new(void);
+void filter_destroy(filter_t *p);
+
+
 #endif

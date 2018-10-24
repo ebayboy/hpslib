@@ -9,6 +9,9 @@ typedef struct {
     char mz[WAF_RULE_MZ_LEN];  
 } match_t;
 
+match_t * match_new();
+void match_destroy(match_t *matcher);
+
 #endif
 
 

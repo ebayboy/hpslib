@@ -12,7 +12,7 @@
 #include "log.h"
 #include "common.h"
 
-void *filter_new(void)
+filter_t * filter_new(void)
 {
     filter_t *p = malloc(sizeof(filter_t));
     memset(p, 0, sizeof(filter_t));
@@ -135,5 +135,4 @@ int filter_alloc_scratch(void *h, void **pp_scratch) {
     }
     return 0;
 }
-
 
