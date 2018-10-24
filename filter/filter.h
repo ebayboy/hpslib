@@ -5,14 +5,15 @@
 #include <hs_runtime.h>
 #include <hs.h>
 
+
 typedef struct {
     hs_database_t *db;
     hs_scratch_t *scratch;
 
-    int  *ids;
-    char **patterns;
+    int *ids;
+    char **rxs;
     int *flags;
-    unsigned int patterns_size;
+    unsigned int idx_cursor; /* used for ids  & patterns & flags */
 } filter_t;
 
 filter_t * filter_new(void);

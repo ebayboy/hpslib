@@ -11,6 +11,7 @@
 
 #include "match.h"
 #include "filter.h"
+#include "waf_config.h"
 
 void match_destroy(match_t *matcher)
 {
@@ -44,3 +45,11 @@ match_t * match_new()
     return new;
 }
 
+int match_add_rule(match_t *matcher, waf_rule_t *rule)
+{
+    if (matcher == NULL || rule == NULL || matcher->filter == NULL) {
+        return -1;
+    }
+
+    return filter_add_rule(matcher->filter, rule);
+}

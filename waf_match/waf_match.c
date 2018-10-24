@@ -11,6 +11,30 @@
 
 #include "match.h"
 #include "waf_match.h"
+#include "waf_config.h"
+
+static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
+{
+    match_t *matcher;
+    int i;
+
+    if (waf_matcher == NULL || mz == NULL || strlen(mz) == 0) {
+        return NULL;
+    }
+
+    for (i = 0;i < WAF_MZ_MAX;i++) {
+        matcher = waf_matcher->matchers[i];
+        if (matcher == NULL) {
+            continue;
+        }
+        if (strcasecmp(matcher->mz, mz) == 0) {
+            matcher;
+        }
+    }
+
+    return NULL;
+}
+
 
 void waf_match_destory(waf_match_t *waf_match)
 {
@@ -58,26 +82,25 @@ waf_match_t * waf_match_new(void)
     return waf_matcher;
 }
 
-static match_t* find_matcher(waf_match_t *waf_matcher, const char *mz)
+int waf_match_add_rule(waf_match_t *waf_matcher, waf_rule_t *rule)
 {
     match_t *matcher;
-    int i;
 
-    if (waf_matcher == NULL || mz == NULL || strlen(mz) == 0) {
-        return NULL;
+    if (waf_matcher == NULL || rule == NULL) {
+        return -1;
     }
 
-    for (i = 0;i < WAF_MZ_MAX;i++) {
-        matcher = waf_matcher->matchers[i];
-        if (matcher == NULL) {
-            continue;
-        }
-        if (strcasecmp(matcher->mz, mz) == 0) {
-            matcher;
+    matcher = find_matcher(waf_matcher, rule->mz);
+    if (matcher == NULL) {
+        if ((matcher = match_new()) == NULL) {
+            return -1;
         }
     }
 
-    return NULL;
+    match_add_rule(matcher, rule);
+
+    return 0;
 }
+
 
 

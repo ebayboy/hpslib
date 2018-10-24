@@ -11,6 +11,7 @@
 #include "waf.h"
 #include "log.h"
 #include "common.h"
+#include "filter.h"
 
 filter_t * filter_new(void)
 {
@@ -23,10 +24,10 @@ filter_t * filter_new(void)
     p->flags = malloc(WAF_RULES_MAX*sizeof(int));
     memset(p->flags, 0, WAF_RULES_MAX*sizeof(int));
 
-    p->patterns = malloc(WAF_RULES_MAX*sizeof(char *));
-    memset(p->patterns, 0, WAF_RULES_MAX*sizeof(char *));
+    p->rxs = malloc(WAF_RULES_MAX*sizeof(char *));
+    memset(p->rxs, 0, WAF_RULES_MAX*sizeof(char *));
 
-    p->patterns_size = 0;
+    p->idx_cursor = 0;
 
     return p;
 }
@@ -43,11 +44,11 @@ void filter_destroy(filter_t *p)
         hs_free_database(p->db);
     }
 
-    for (i = 0;i < p->patterns_size;i++ ) {
-        free((void *) p->patterns[i]);
+    for (i = 0;i < p->idx_cursor;i++ ) {
+        free((void *) p->rxs[i]);
     }
 
-    free((void *) p->patterns);
+    free((void *) p->rxs);
     free((void *) p->ids);
     free((void *) p->flags);
 
@@ -64,25 +65,33 @@ static int on_match(unsigned int id, unsigned long long from,
     return 0;
 }
 
-int filter_addrule(void *x, int id, char *pattern)
+int filter_add_rule(filter_t *filter, waf_rule_t *rule)
 {
-    filter_t *f = (filter_t *) x;
     char *p;
-
-    unsigned int idx = f->patterns_size;
+    unsigned int idx;
+   
+    if (filter == NULL || rule == NULL) {
+        return -1;
+    }
+    
+    idx = filter->idx_cursor;
     if (idx == WAF_RULES_MAX) {
-        /* overflow */
         return -1;
     }
 
-    if ((p = strdup(pattern)) == NULL) {
-        return -1;
-    }
+    /* rx */
+    if ((p = strdup(rule->rx)) == NULL) { 
+        return -1;  
+    }   
+    filter->rxs[idx] = p; 
 
-    f->ids[idx] = id;
-    f->patterns[idx] = p;
-    f->flags[idx] = HS_FLAG_CASELESS | HS_FLAG_SINGLEMATCH | HS_FLAG_DOTALL;
-    ++f->patterns_size;
+    /* id */
+    filter->ids[idx] = rule->id;
+
+    /* flags */
+    filter->flags[idx] = HS_FLAG_CASELESS | HS_FLAG_SINGLEMATCH | HS_FLAG_DOTALL;
+    ++filter->idx_cursor;
+
     return 0;
 
 }
@@ -92,8 +101,8 @@ int filter_compile(void *x) {
     hs_compile_error_t *compileErr = NULL;
     hs_error_t err;
 
-    err = hs_compile_multi((const char *const *)f->patterns, f->flags, f->ids,
-            f->patterns_size, HS_MODE_BLOCK, NULL, &f->db, &compileErr);
+    err = hs_compile_multi((const char *const *)f->rxs, f->flags, f->ids,
+            f->idx_cursor, HS_MODE_BLOCK, NULL, &f->db, &compileErr);
 
     if (err != HS_SUCCESS) {
         if (compileErr->expression < 0) {

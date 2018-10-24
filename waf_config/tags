@@ -1,0 +1,115 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CC_CUSTOM_POLICY_MAX	waf_config.cpp	41;"	d	file:
+CC_POLICY_MODE_FREQUENCY	waf_config.cpp	42;"	d	file:
+CC_POLICY_MODE_RESP_TIME	waf_config.cpp	43;"	d	file:
+INTER_RULES_HS_FLAGS	waf_config.cpp	60;"	d	file:
+INTR_RULES_MAX	waf_config.cpp	45;"	d	file:
+LOG_DEBUG	waf_config.cpp	2408;"	d	file:
+LOG_ERROR	waf_config.cpp	2415;"	d	file:
+LOG_NOTICE	waf_config.cpp	2425;"	d	file:
+MAGIC	waf_config.cpp	2402;"	d	file:
+SEC_RULES_HS_FLAGS	waf_config.cpp	54;"	d	file:
+SEC_RULES_MAX	waf_config.cpp	47;"	d	file:
+USER_RULES_MAX	waf_config.cpp	46;"	d	file:
+WAF_ACT_BLOCK	cfg_parser.h	/^    WAF_ACT_BLOCK,$/;"	e	enum:__anon2
+WAF_ACT_LOG	cfg_parser.h	/^    WAF_ACT_LOG,$/;"	e	enum:__anon2
+WAF_ACT_NONE	cfg_parser.h	/^    WAF_ACT_NONE = 0,$/;"	e	enum:__anon2
+WAF_ACT_PASS	cfg_parser.h	/^    WAF_ACT_PASS,$/;"	e	enum:__anon2
+WAF_ANTIBF_HIT_VAR_OFFSET	waf_config.cpp	51;"	d	file:
+WAF_ANTIBOT_HIT_VAR_OFFSET	waf_config.cpp	52;"	d	file:
+WAF_ANTISD_HIT_VAR_OFFSET	waf_config.cpp	50;"	d	file:
+WAF_CC_HIT_VAR_OFFSET	waf_config.cpp	49;"	d	file:
+WAF_CHALLENGE	waf_config.cpp	2394;"	d	file:
+WAF_CONF_CURRENT_VER	waf_config.cpp	2404;"	d	file:
+WAF_CONF_PREVIOUS_VER	waf_config.cpp	2403;"	d	file:
+WAF_ENGINE_OFF	cfg_parser.h	/^    WAF_ENGINE_OFF = 0, $/;"	e	enum:__anon1
+WAF_ENGINE_ON	cfg_parser.h	/^    WAF_ENGINE_ON = 1$/;"	e	enum:__anon1
+WAF_ERROR	waf_config.cpp	2397;"	d	file:
+WAF_FORBIDDEN	waf_config.cpp	2399;"	d	file:
+WAF_NONE	waf_config.cpp	2398;"	d	file:
+WAF_OK	waf_config.cpp	2396;"	d	file:
+WAF_PASS	waf_config.cpp	2400;"	d	file:
+WAF_RULES_MAX	cfg_parser.h	5;"	d
+WAF_RULE_MZ_MAX	cfg_parser.h	6;"	d
+WAF_RULE_RX_MAX	cfg_parser.h	7;"	d
+WAF_VERIFIED	waf_config.cpp	2395;"	d	file:
+__CFG_PARSER_H__	cfg_parser.h	3;"	d
+_cfgwaf_s	cfg_parser.h	/^typedef struct _cfgwaf_s {$/;"	s
+_waf_rules_t	cfg_parser.h	/^typedef struct _waf_rules_t {$/;"	s
+cf	waf_config.cpp	/^    ngx_conf_t              *cf;$/;"	m	struct:waf_cf_metadata_s	file:
+cfg_parser_parse	cfg_parser.c	/^int cfg_parser_parse(const char *filename)$/;"	f
+cfg_parser_parse_demo	cfg_parser.c	/^static int cfg_parser_parse_demo()$/;"	f	file:
+cfg_parser_parse_secrule	cfg_parser.c	/^static int cfg_parser_parse_secrule()$/;"	f	file:
+id	cfg_parser.h	/^    int id;$/;"	m	struct:_waf_rules_t
+logger	waf_config.cpp	/^static ngx_log_t *logger = NULL;$/;"	v	file:
+mz	cfg_parser.h	/^    char *mz[WAF_RULE_MZ_MAX];$/;"	m	struct:_waf_rules_t
+ngx_http_waf_compileMaliciousIPBlockTime	waf_config.cpp	/^ngx_int_t ngx_http_waf_compileMaliciousIPBlockTime(waf_main_conf_t *waf_conf, ngx_str_t *th)$/;"	f
+ngx_http_waf_compileMaliciousIPThreshold	waf_config.cpp	/^ngx_int_t ngx_http_waf_compileMaliciousIPThreshold(waf_main_conf_t *waf_conf, ngx_str_t *th)$/;"	f
+ngx_http_waf_compile_threshold	waf_config.cpp	/^ngx_int_t ngx_http_waf_compile_threshold(ngx_int_t *first_out, ngx_int_t *last_out, ngx_str_t *in)$/;"	f
+ngx_http_waf_compile_time	waf_config.cpp	/^ngx_int_t ngx_http_waf_compile_time(ngx_int_t *out, ngx_str_t *in)$/;"	f
+ngx_http_waf_loadMaliciousIP_curr	waf_config.cpp	/^ngx_int_t ngx_http_waf_loadMaliciousIP_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+ngx_http_waf_loadURule_curr	waf_config.cpp	/^ngx_int_t ngx_http_waf_loadURule_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+ngx_waf_loadMonitor_curr	waf_config.cpp	/^ngx_int_t ngx_waf_loadMonitor_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+ngx_waf_monitor_waf_conf_print	waf_config.cpp	/^static void ngx_waf_monitor_waf_conf_print(waf_main_conf_t *conf, ngx_conf_t *cf)$/;"	f	file:
+rules	cfg_parser.h	/^    waf_rule_t rules[WAF_RULES_MAX];$/;"	m	struct:_cfgwaf_s
+rx	cfg_parser.h	/^    char *rx[WAF_RULE_RX_MAX];$/;"	m	struct:_waf_rules_t
+value_handler_t	waf_config.cpp	/^typedef ngx_int_t (*value_handler_t)(ngx_pool_t *pool, cJSON *cmd, void *data);$/;"	t	file:
+var_comb	waf_config.cpp	/^    waf_variable_comb_t     *var_comb;$/;"	m	struct:waf_cf_metadata_s	file:
+waf_action	cfg_parser.h	/^    waf_action_e waf_action;$/;"	m	struct:_cfgwaf_s
+waf_action_e	cfg_parser.h	/^} waf_action_e;$/;"	t	typeref:enum:__anon2
+waf_action_str_to_enum	waf_config.cpp	/^ngx_int_t waf_action_str_to_enum(ngx_pool_t *pool, cJSON *cmd, void *action)$/;"	f	file:
+waf_antibruteforce_load_conf_curr	waf_config.cpp	/^ngx_int_t waf_antibruteforce_load_conf_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+waf_antispider_load_conf_curr	waf_config.cpp	/^ngx_int_t waf_antispider_load_conf_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+waf_cc_load_conf_curr	waf_config.cpp	/^ngx_int_t waf_cc_load_conf_curr(ngx_conf_t *cf, waf_main_conf_t *waf_conf, int fd)$/;"	f
+waf_cc_policy_mode_to_enum	waf_config.cpp	/^ngx_int_t waf_cc_policy_mode_to_enum(ngx_pool_t *pool, cJSON *cmd, void *mode)$/;"	f	file:
+waf_cf_metadata_s	waf_config.cpp	/^typedef struct waf_cf_metadata_s {    $/;"	s	file:
+waf_cf_metadata_t	waf_config.cpp	/^} waf_cf_metadata_t;$/;"	t	typeref:struct:waf_cf_metadata_s	file:
+waf_comm_parse_threshold	waf_config.cpp	/^ngx_int_t waf_comm_parse_threshold(ngx_conf_t *cf, ngx_str_t *thresh_str, waf_threshold_t *app_th)$/;"	f
+waf_comm_parse_time	waf_config.cpp	/^ngx_int_t waf_comm_parse_time(ngx_conf_t *cf, ngx_str_t *time_str, ngx_int_t *time_int)$/;"	f
+waf_conf_load_bin	waf_config.cpp	/^waf_conf_load_bin(ngx_conf_t *cf, int fd, void **ptr)$/;"	f
+waf_conf_load_int	waf_config.cpp	/^ngx_int_t waf_conf_load_int(int fd, void *value, ssize_t len)$/;"	f
+waf_conf_load_str	waf_config.cpp	/^ngx_int_t waf_conf_load_str(ngx_conf_t *cf, int fd, ngx_str_t *value)$/;"	f
+waf_engine	cfg_parser.h	/^    int waf_engine;$/;"	m	struct:_cfgwaf_s
+waf_engine_e	cfg_parser.h	/^} waf_engine_e;$/;"	t	typeref:enum:__anon1
+waf_get_array_size	waf_config.cpp	/^ngx_int_t waf_get_array_size(cJSON *root, const char *first, ...)$/;"	f
+waf_get_cmd	waf_config.cpp	/^waf_get_cmd(cJSON *root, value_handler_t handler, ngx_pool_t *pool, void *data, $/;"	f
+waf_get_node	waf_config.cpp	/^waf_get_node(cJSON *root, const char *first, ...)$/;"	f
+waf_load_conf	waf_config.cpp	/^waf_load_conf(ngx_conf_t *cf, ngx_cycle_t *cycle, waf_main_conf_t *waf_conf)$/;"	f
+waf_load_conf_bot	waf_config.cpp	/^void * waf_load_conf_bot(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_bruteforce	waf_config.cpp	/^void * waf_load_conf_bruteforce(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_cc	waf_config.cpp	/^void * waf_load_conf_cc(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_dlp	waf_config.cpp	/^void * waf_load_conf_dlp(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_global	waf_config.cpp	/^waf_load_conf_global(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_internal_rules	waf_config.cpp	/^void * waf_load_conf_internal_rules(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_ip_region	waf_config.cpp	/^waf_load_conf_ip_region(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_malicous_ip	waf_config.cpp	/^waf_load_conf_malicous_ip(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_prev	waf_config.cpp	/^waf_load_conf_prev(ngx_conf_t *cf, ngx_cycle_t *cycle, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_rfc2616	waf_config.cpp	/^waf_load_conf_rfc2616(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_sec_rules	waf_config.cpp	/^void * waf_load_conf_sec_rules(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_spider	waf_config.cpp	/^void * waf_load_conf_spider(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_user_rules	waf_config.cpp	/^void * waf_load_conf_user_rules(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_conf_waf_monitor	waf_config.cpp	/^waf_load_conf_waf_monitor(ngx_conf_t *cf, cJSON *root, waf_main_conf_t *waf_conf)$/;"	f	file:
+waf_load_conf_weblock	waf_config.cpp	/^void * waf_load_conf_weblock(ngx_conf_t *cf, cJSON *root, $/;"	f	file:
+waf_load_rule	waf_config.cpp	/^ngx_int_t waf_load_rule(ngx_conf_t *cf, waf_main_conf_t *waf_conf,$/;"	f	file:
+waf_load_weblock_conf_curr	waf_config.cpp	/^ngx_int_t waf_load_weblock_conf_curr(ngx_conf_t *cf, waf_main_conf_t *new_waf_conf, int fd)$/;"	f
+waf_ngx_str_variable_split	waf_config.cpp	/^ngx_int_t waf_ngx_str_variable_split(ngx_pool_t *pool, $/;"	f	file:
+waf_ngx_str_variable_split_dot	waf_config.cpp	/^ngx_int_t waf_ngx_str_variable_split_dot(ngx_pool_t *pool, $/;"	f	file:
+waf_parse_freq_base_threshold	waf_config.cpp	/^ngx_int_t waf_parse_freq_base_threshold(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_parse_time_base_threshold	waf_config.cpp	/^ngx_int_t waf_parse_time_base_threshold(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_rule_id_split	waf_config.cpp	/^ngx_int_t waf_rule_id_split(ngx_pool_t *pool, $/;"	f	file:
+waf_rule_t	cfg_parser.h	/^} waf_rule_t;$/;"	t	typeref:struct:_waf_rules_t
+waf_switch_str_to_enum	waf_config.cpp	/^ngx_int_t waf_switch_str_to_enum(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_t	cfg_parser.h	/^} waf_t;$/;"	t	typeref:struct:_cfgwaf_s
+waf_value_file_size_str_to_byte_int	waf_config.cpp	/^ngx_int_t waf_value_file_size_str_to_byte_int(ngx_pool_t *pool,$/;"	f	file:
+waf_value_logic_to_enum	waf_config.cpp	/^ngx_int_t waf_value_logic_to_enum(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_value_ngx_str_copy	waf_config.cpp	/^ngx_int_t waf_value_ngx_str_copy(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_value_std_str_copy	waf_config.cpp	/^ngx_int_t waf_value_std_str_copy(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_value_str_to_int	waf_config.cpp	/^ngx_int_t waf_value_str_to_int(ngx_pool_t *pool, cJSON *cmd, void *data)$/;"	f	file:
+waf_value_time_str_to_sec_int	waf_config.cpp	/^ngx_int_t waf_value_time_str_to_sec_int(ngx_pool_t *pool,$/;"	f	file:
+waf_weblock_disk_init	waf_config.cpp	/^ngx_int_t waf_weblock_disk_init(ngx_conf_t *cf, waf_main_conf_t *waf_conf)$/;"	f	file:
+wafid	cfg_parser.h	/^    int wafid;$/;"	m	struct:_cfgwaf_s
