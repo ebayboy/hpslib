@@ -35,6 +35,27 @@ static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
     return NULL;
 }
 
+static int waf_match_add_rule(waf_match_t *waf_matcher, waf_config_t *waf_config)
+{
+    match_t *matcher;
+    waf_rule_t *rule;
+
+    if (waf_matcher == NULL || rule == NULL) {
+        return -1;
+    }
+
+    matcher = find_matcher(waf_matcher, rule->mz);
+    if (matcher == NULL) {
+        if ((matcher = match_new()) == NULL) {
+            return -1;
+        }
+    }
+
+    match_add_rule(matcher, rule);
+
+    return 0;
+}
+
 void waf_match_fini(waf_match_t *waf_match)
 {
     int i;
@@ -54,15 +75,16 @@ void waf_match_fini(waf_match_t *waf_match)
     }
 }
 
-int waf_match_init(waf_match_t *waf_matcher)
+int waf_match_init(waf_match_t *waf_matcher, waf_config_t *cfg)
 {
     match_t *matcher;
     int i;
 
     memset(waf_matcher, 0, sizeof(waf_match_t));
 
-    waf_matcher->waf_engine = WAF_ENGINE_OFF;
-    waf_matcher->waf_action = WAF_ACT_NONE;
+    waf_matcher->waf_engine = cfg->waf_engine;
+    waf_matcher->waf_action = cfg->waf_action;
+    strncpy(waf_matcher->waf_id, cfg->waf_id, sizeof(waf_matcher->waf_id));
 
     for(i = 0; i < WAF_MZ_MAX; i++) {
         if ((matcher = match_new()) == NULL) {
@@ -74,26 +96,4 @@ int waf_match_init(waf_match_t *waf_matcher)
 
     return 0;
 }
-
-int waf_match_add_rule(waf_match_t *waf_matcher, waf_rule_t *rule)
-{
-    match_t *matcher;
-
-    if (waf_matcher == NULL || rule == NULL) {
-        return -1;
-    }
-
-    matcher = find_matcher(waf_matcher, rule->mz);
-    if (matcher == NULL) {
-        if ((matcher = match_new()) == NULL) {
-            return -1;
-        }
-    }
-
-    match_add_rule(matcher, rule);
-
-    return 0;
-}
-
-
 

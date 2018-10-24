@@ -9,14 +9,8 @@
 #include "filter.h"
 #include "waf_config.h"
 
-typedef struct {
-    FILE *log_fp;
-    waf_config_t waf_config;
-    waf_match_t waf_matcher;
-} waf_t;
-
-int waf_init(const char *logfile, const char *config);
-int waf_fini(void);
+int waf_init(const char *log_fname, const char *cfg_fname);
+void waf_fini(void);
 
 #endif
 

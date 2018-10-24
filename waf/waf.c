@@ -3,7 +3,17 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "waf.h"
+#include "common.h"
+#include "match.h"
+#include "waf_match.h"
+#include "filter.h"
+#include "waf_config.h"
+
+typedef struct {
+    FILE *log_fp;
+    waf_config_t waf_config;
+    waf_match_t waf_match;
+} waf_t;
 
 waf_t waf;
 
@@ -29,31 +39,29 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
     return 0;
 }
 
-int waf_fini(void)
+void waf_fini(void)
 {
     /* log destroy */
     if (waf.log_fp != NULL) {
         fclose(waf.log_fp);
     }
 
-    return 0;
+    waf_match_fini(&waf.waf_match);
 }
 
 int waf_init(const char *logfile, const char *waf_config_name)
 {
     memset(&waf, 0, sizeof(waf));
 
-    /* logger init */
     if (waf_logger_init(logfile, &waf) == -1) {
         goto error;
     }
 
-    /* config init */
     if (waf_config_init(waf_config_name, &waf.waf_config)) {
         goto error;
     }
     
-    /* add config to waf_match */
+    waf_match_init(&waf.waf_match, &waf.waf_config);
 
     return 0;
 
