@@ -35,8 +35,7 @@ static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
     return NULL;
 }
 
-
-void waf_match_destory(waf_match_t *waf_match)
+void waf_match_fini(waf_match_t *waf_match)
 {
     int i;
     match_t *matcher = NULL;
@@ -55,16 +54,10 @@ void waf_match_destory(waf_match_t *waf_match)
     }
 }
 
-waf_match_t * waf_match_new(void)
+int waf_match_init(waf_match_t *waf_matcher)
 {
-    waf_match_t *waf_matcher  = NULL;
     match_t *matcher;
     int i;
-
-    waf_matcher = malloc(sizeof(waf_match_t));
-    if (waf_matcher == NULL) {
-        return NULL;
-    }
 
     memset(waf_matcher, 0, sizeof(waf_match_t));
 
@@ -74,12 +67,12 @@ waf_match_t * waf_match_new(void)
     for(i = 0; i < WAF_MZ_MAX; i++) {
         if ((matcher = match_new()) == NULL) {
             waf_match_destory(waf_matcher);
-            return NULL;
+            return -1;
         }
         waf_matcher->matchers[i] = matcher;
     }
 
-    return waf_matcher;
+    return 0;
 }
 
 int waf_match_add_rule(waf_match_t *waf_matcher, waf_rule_t *rule)

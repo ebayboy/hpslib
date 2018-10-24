@@ -16,7 +16,6 @@ typedef struct {
 } waf_t;
 
 int waf_init(const char *logfile, const char *config);
-
 int waf_fini(void);
 
 #endif

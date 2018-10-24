@@ -31,6 +31,7 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
 
 int waf_fini(void)
 {
+    /* log destroy */
     if (waf.log_fp != NULL) {
         fclose(waf.log_fp);
     }
@@ -51,6 +52,8 @@ int waf_init(const char *logfile, const char *waf_config_name)
     if (waf_config_init(waf_config_name, &waf.waf_config)) {
         goto error;
     }
+    
+    /* add config to waf_match */
 
     return 0;
 
