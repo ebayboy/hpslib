@@ -16,6 +16,7 @@ typedef struct {
 
 void waf_match_fini(waf_match_t *waf_match);
 int waf_match_init(waf_match_t *waf_matcher, waf_config_t *cfg);
+void waf_match_show(waf_match_t *waf_matcher);
 
 #endif
 

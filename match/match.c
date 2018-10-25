@@ -9,6 +9,7 @@
 #include <hs_runtime.h>
 #include <hs.h>
 
+#include "log.h"
 #include "match.h"
 #include "filter.h"
 #include "waf_config.h"
@@ -53,3 +54,11 @@ int match_add_rule(match_t *matcher, waf_rule_t *rule)
 
     return filter_add_rule(matcher->filter, rule);
 }
+
+void match_show(match_t *matcher)
+{
+    log_info("mz:%s\n", matcher->mz);
+    filter_show(matcher->filter);
+}
+
+

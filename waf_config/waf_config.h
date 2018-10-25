@@ -19,6 +19,7 @@ typedef struct {
 } waf_config_t;
 
 int waf_config_init(const char *filename, waf_config_t *waf);
+void waf_config_show(waf_config_t *cfg);
 
 #endif
 

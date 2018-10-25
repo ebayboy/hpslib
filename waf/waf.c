@@ -71,3 +71,12 @@ error:
     return -1;
 }
 
+#if 0
+void waf_show()
+{
+    log_info("log_fp:%p", waf.log_fp);
+    waf_config_show(&waf.waf_config);
+    waf_match_show(&waf.waf_match);
+}
+
+#endif

@@ -11,6 +11,7 @@ typedef struct {
 
 match_t * match_new();
 void match_destroy(match_t *matcher);
+void match_show(match_t *matcher);
 
 #endif
 

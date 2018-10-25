@@ -145,3 +145,26 @@ int filter_alloc_scratch(void *h, void **pp_scratch) {
     return 0;
 }
 
+void filter_show(filter_t *filter)
+{
+
+typedef struct {
+    hs_database_t *db;
+    hs_scratch_t *scratch;
+
+    int *ids;
+    char **rxs;
+    int *flags;
+    unsigned int idx_cursor; /* used for ids  & patterns & flags */
+} filter_t;
+
+    int i;
+    for (i = 0; i< WAF_RULES_MAX; i++) {
+        log_info("db:[%p] scratch:[%p] id:[%d] rx:[%s] idx_cursor:[%d]", 
+                filter->db, filter->scratch,
+                filter->ids[i], filter->rxs[i], filter->idx_cursor);
+    }
+}
+
+
+

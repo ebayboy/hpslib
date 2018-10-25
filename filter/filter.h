@@ -18,6 +18,7 @@ typedef struct {
 
 filter_t * filter_new(void);
 void filter_destroy(filter_t *p);
+void filter_show(filter_t *filter);
 
 
 #endif

@@ -212,3 +212,29 @@ out:
     return ret;
 }
 
+static void waf_config_secrule_show(waf_rule_t *rule)
+{
+    log_info("rule->id:[%d]", rule->id);
+    log_info("rule->mz:[%s]", rule->mz);
+    log_info("rule->rx:[%s]", rule->rx);
+}
+
+void waf_config_show(waf_config_t *cfg)
+{
+    int i;
+
+    if (cfg == NULL) {
+        return;
+    }
+
+    log_info("waf_engine:%d", cfg->waf_engine);
+    log_info("waf_action:%d", cfg->waf_action);
+    log_info("waf_id:%s", cfg->waf_id);
+
+    for (i = 0; i< WAF_RULES_MAX; i++) {
+        waf_config_secrule_show(&cfg->rules[i]);
+    }
+}
+
+
+

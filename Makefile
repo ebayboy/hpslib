@@ -3,7 +3,7 @@ PWD=$(shell pwd)
 INCS= -I$(PWD)/hyperscan/include/
 
 # change to you project name
-MYLIB = hpslib.a
+MYLIB = libhps.a
 
 # change to you project file dir
 VPATH = common:test:waf_config:filter:log:waf:match:waf_match

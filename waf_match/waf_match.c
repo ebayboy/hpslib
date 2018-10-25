@@ -10,6 +10,7 @@
 #include <hs.h>
 
 #include "match.h"
+#include "log.h"
 #include "waf_match.h"
 #include "waf_config.h"
 
@@ -71,7 +72,7 @@ void waf_match_fini(waf_match_t *waf_match)
             continue;
         }
 
-        match_destory(matcher);
+        match_destroy(matcher);
     }
 }
 
@@ -88,12 +89,27 @@ int waf_match_init(waf_match_t *waf_matcher, waf_config_t *cfg)
 
     for(i = 0; i < WAF_MZ_MAX; i++) {
         if ((matcher = match_new()) == NULL) {
-            waf_match_destory(waf_matcher);
+            waf_match_fini(waf_matcher);
             return -1;
         }
         waf_matcher->matchers[i] = matcher;
     }
 
     return 0;
+}
+
+void waf_match_show(waf_match_t *waf_matcher)
+{
+    int i;
+    match_t *matcher;
+
+    if (waf_matcher == NULL) {
+        return ;
+    }
+
+    log_info("waf_engine:%d\nwaf_action:%d\nwaf_id:[%d]\n");
+    for (i = 0; i< WAF_MZ_MAX; i++) {
+        match_show(matcher);
+    }
 }
 
