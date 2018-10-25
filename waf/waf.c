@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "log.h"
 #include "common.h"
 #include "match.h"
 #include "waf_match.h"
@@ -15,7 +16,7 @@ typedef struct {
     waf_match_t waf_match;
 } waf_t;
 
-waf_t waf;
+static waf_t *waf = NULL;
 
 static int waf_logger_init(const char *logfile, waf_t *waf)
 {
@@ -42,26 +43,36 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
 void waf_fini(void)
 {
     /* log destroy */
-    if (waf.log_fp != NULL) {
-        fclose(waf.log_fp);
+    if (waf->log_fp != NULL) {
+        fclose(waf->log_fp);
     }
 
-    waf_match_fini(&waf.waf_match);
+    waf_match_fini(&waf->waf_match);
 }
 
 int waf_init(const char *logfile, const char *waf_config_name)
 {
-    memset(&waf, 0, sizeof(waf));
 
-    if (waf_logger_init(logfile, &waf) == -1) {
+    if (waf == NULL) {
+        if ((waf = malloc(sizeof(waf_t))) == NULL) {
+            log_error("waf malloc error!");
+            return -1;
+        }
+        memset(waf, 0, sizeof(waf_t));
+        if (waf == NULL) {
+            return -1;
+        }
+    }
+
+    if (waf_logger_init(logfile, waf) == -1) {
         goto error;
     }
 
-    if (waf_config_init(waf_config_name, &waf.waf_config)) {
+    if (waf_config_init(waf_config_name, &waf->waf_config)) {
         goto error;
     }
     
-    waf_match_init(&waf.waf_match, &waf.waf_config);
+    waf_match_init(&waf->waf_match, &waf->waf_config);
 
     return 0;
 
@@ -71,12 +82,14 @@ error:
     return -1;
 }
 
-#if 0
 void waf_show()
 {
-    log_info("log_fp:%p", waf.log_fp);
-    waf_config_show(&waf.waf_config);
-    waf_match_show(&waf.waf_match);
+    if (waf == NULL) {
+        return;
+    }
+
+    log_info("log_fp:%p", waf->log_fp);
+    waf_config_show(&waf->waf_config);
+    waf_match_show(&waf->waf_match);
 }
 
-#endif

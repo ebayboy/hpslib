@@ -11,7 +11,7 @@ typedef struct {
     char waf_id[WAF_ID_LEN];
 
     match_t *matchers[WAF_MZ_MAX]; /* WAF_MZ_MAX */
-
+    int matcher_cursor;
 } waf_match_t;
 
 void waf_match_fini(waf_match_t *waf_match);

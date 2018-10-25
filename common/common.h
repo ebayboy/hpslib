@@ -8,7 +8,8 @@
 #define WAF_MZ_MAX          128
 
 #define WAF_RULE_ID_LEN     128
-#define WAF_RULE_MZ_LEN     1024
+#define WAF_RULE_MZ_LEN     128
+#define WAF_RULE_MZS_LEN    1024
 #define WAF_RULE_RX_LEN     4096
 
 typedef enum {
@@ -25,5 +26,6 @@ typedef enum {
 } waf_action_e;
 
 long fsize(FILE *fp);
+void strim(char *str);
 
 #endif

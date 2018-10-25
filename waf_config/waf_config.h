@@ -6,7 +6,7 @@
 
 typedef struct {
     int id;
-    char mz[WAF_RULE_MZ_LEN];
+    char mz[WAF_RULE_MZS_LEN];
     char rx[WAF_RULE_RX_LEN];
 } waf_rule_t;
 
@@ -16,6 +16,7 @@ typedef struct {
     char waf_id[WAF_ID_LEN];
   
     waf_rule_t rules[WAF_RULES_MAX];
+    int idx_cursor;
 } waf_config_t;
 
 int waf_config_init(const char *filename, waf_config_t *waf);

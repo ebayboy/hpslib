@@ -46,10 +46,14 @@ match_t * match_new()
     return new;
 }
 
-int match_add_rule(match_t *matcher, waf_rule_t *rule)
+int match_add_rule(match_t *matcher, waf_rule_t *rule, const char *mz)
 {
     if (matcher == NULL || rule == NULL || matcher->filter == NULL) {
         return -1;
+    }
+
+    if (strlen(matcher->mz) == 0) {
+        strncpy(matcher->mz, mz, sizeof(matcher->mz) -1 );
     }
 
     return filter_add_rule(matcher->filter, rule);
@@ -57,7 +61,7 @@ int match_add_rule(match_t *matcher, waf_rule_t *rule)
 
 void match_show(match_t *matcher)
 {
-    log_info("mz:%s\n", matcher->mz);
+    log_info("mz:[%s]\n", matcher->mz);
     filter_show(matcher->filter);
 }
 

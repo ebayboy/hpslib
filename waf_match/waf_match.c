@@ -40,19 +40,47 @@ static int waf_match_add_rule(waf_match_t *waf_matcher, waf_config_t *waf_config
 {
     match_t *matcher;
     waf_rule_t *rule;
+    int i;
+    char buf[WAF_RULE_MZS_LEN] = {0};
+    char *ptrim, *token;
 
     if (waf_matcher == NULL || rule == NULL) {
         return -1;
     }
 
-    matcher = find_matcher(waf_matcher, rule->mz);
-    if (matcher == NULL) {
-        if ((matcher = match_new()) == NULL) {
-            return -1;
+    for (i = 0; i < waf_config->idx_cursor; i++ ) {
+        rule = &waf_config->rules[i];
+
+        strncpy(buf, rule->mz, sizeof(buf) - 1);
+
+        log_info("buf:[%s]", buf);
+
+        token = strtok(buf,",");
+
+        while(token) {
+            ptrim = token;
+            strim(ptrim);
+            if (ptrim == NULL) {
+                log_error("ptrim mz=[%s]", ptrim);
+                return -1;
+            }
+            log_info("token:[%s] ptrim:[%s]", token, ptrim);
+
+            /*check matcher */
+            matcher = find_matcher(waf_matcher, ptrim);
+            if (matcher == NULL) {
+                if ((matcher = match_new()) == NULL) {
+                    return -1;
+                }
+            }
+            strncpy(matcher->mz, ptrim, sizeof(matcher->mz) - 1);
+
+            match_add_rule(matcher, rule, ptrim);
+            log_info("id:[%d] macher->mz:[%s]", rule->id, matcher->mz);
+            token = strtok(NULL,",");
+            waf_matcher->matchers[waf_matcher->matcher_cursor++] = matcher;
         }
     }
-
-    match_add_rule(matcher, rule);
 
     return 0;
 }
@@ -81,18 +109,20 @@ int waf_match_init(waf_match_t *waf_matcher, waf_config_t *cfg)
     match_t *matcher;
     int i;
 
+    if (waf_matcher == NULL || cfg == NULL) {
+        return 0;
+    }
+
     memset(waf_matcher, 0, sizeof(waf_match_t));
 
+    waf_matcher->matcher_cursor = 0;
     waf_matcher->waf_engine = cfg->waf_engine;
     waf_matcher->waf_action = cfg->waf_action;
     strncpy(waf_matcher->waf_id, cfg->waf_id, sizeof(waf_matcher->waf_id));
 
-    for(i = 0; i < WAF_MZ_MAX; i++) {
-        if ((matcher = match_new()) == NULL) {
-            waf_match_fini(waf_matcher);
-            return -1;
-        }
-        waf_matcher->matchers[i] = matcher;
+    if (waf_match_add_rule(waf_matcher, cfg) == -1) {
+        log_error("waf_match_add_rule -1");
+        return -1;
     }
 
     return 0;
@@ -107,9 +137,16 @@ void waf_match_show(waf_match_t *waf_matcher)
         return ;
     }
 
-    log_info("waf_engine:%d\nwaf_action:%d\nwaf_id:[%d]\n");
-    for (i = 0; i< WAF_MZ_MAX; i++) {
-        match_show(matcher);
+    log_info("waf_engine:%d\nwaf_action:%d\nwaf_id:[%s]\n",
+            waf_matcher->waf_engine,
+            waf_matcher->waf_action,
+            waf_matcher->waf_id);
+
+    for (i = 0; i< waf_matcher->matcher_cursor; i++) {
+        matcher = waf_matcher->matchers[i];
+        if (matcher) {
+            match_show(matcher);
+        }
     }
 }
 

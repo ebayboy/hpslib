@@ -98,13 +98,15 @@ static int waf_config_init_secrule(cJSON *root, waf_config_t *waf)
     } while (0)
 
 
-    for (i = 0; i < size; i++) {
+    for (i = 0; i < size && i < WAF_RULES_MAX; i++) {
+
         rule  = cJSON_GetArrayItem(rules, i);
+
         WAF_RULE_ITEM_INT(id);
         WAF_RULE_ITEM(mz);
         WAF_RULE_ITEM(rx);
 
-        log_info("id:%d mz:[%s] rx:[%s]\n", waf->rules[i].id, waf->rules[i].mz, waf->rules[i].rx);
+        waf->idx_cursor++;
     }
 
 out:
@@ -126,6 +128,8 @@ int waf_config_init(const char *filename, waf_config_t *waf)
     FILE *fp = NULL;
     char *temp = NULL;
     cJSON *root = NULL, *it = NULL;
+
+    waf->idx_cursor = 0;
 
     log_info("filename:%s\n", filename);
 
@@ -214,9 +218,7 @@ out:
 
 static void waf_config_secrule_show(waf_rule_t *rule)
 {
-    log_info("rule->id:[%d]", rule->id);
-    log_info("rule->mz:[%s]", rule->mz);
-    log_info("rule->rx:[%s]", rule->rx);
+    log_info("rule->id:[%d] mz:[%s] rx:[%s]", rule->id, rule->mz, rule->rx);
 }
 
 void waf_config_show(waf_config_t *cfg)
@@ -231,7 +233,7 @@ void waf_config_show(waf_config_t *cfg)
     log_info("waf_action:%d", cfg->waf_action);
     log_info("waf_id:%s", cfg->waf_id);
 
-    for (i = 0; i< WAF_RULES_MAX; i++) {
+    for (i = 0; i< cfg->idx_cursor; i++) {
         waf_config_secrule_show(&cfg->rules[i]);
     }
 }

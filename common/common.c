@@ -17,3 +17,34 @@ long fsize(FILE *fp)
     fsetpos(fp,&fpos); 
     return n;
 }
+
+
+void strim(char *str)
+{
+    char *copied, *tail = NULL;
+
+    if ( str == NULL ) { 
+        return;
+    }   
+
+    for( copied = str; *str; str++ ) { 
+        if ( *str != ' ' && *str != '\t' ) { 
+            *copied++ = *str;
+            tail = copied;    
+        }   
+        else {
+            if ( tail )
+                *copied++ = *str;
+        }   
+    }   
+
+    if ( tail ) { 
+        *tail = 0;
+    } else {
+        *copied = 0;
+    }   
+
+    return;
+}
+
+
