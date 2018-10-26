@@ -16,9 +16,22 @@ typedef struct {
     unsigned int idx_cursor; /* used for ids  & patterns & flags */
 } filter_t;
 
+
 filter_t * filter_new(void);
-void filter_destroy(filter_t *p);
+
+
+/**destroy filter. free memory ...
+ *
+ * @param filter
+ *      The filter
+ */
+void filter_destroy(filter_t *filter);
+
 void filter_show(filter_t *filter);
 
+int filter_match(filter_t *p, char *buff, size_t len, int *matched_rule_id);
+
+int filter_build(filter_t *filter);
 
 #endif
+

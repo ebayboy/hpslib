@@ -13,6 +13,61 @@
 #include "common.h"
 #include "filter.h"
 
+static int filter_compile_db(filter_t *f) 
+{
+    hs_compile_error_t *compileErr = NULL;
+    hs_error_t err;
+
+    err = hs_compile_multi((const char *const *)f->rxs, f->flags, f->ids,
+            f->idx_cursor, HS_MODE_BLOCK, NULL, &f->db, &compileErr);
+
+    if (err != HS_SUCCESS) {
+        if (compileErr->expression < 0) {
+            log_error("%s", compileErr->message);
+        } else {
+            log_error("hs_compile_multi '%d' failed with error '%s'",
+                    f->ids[compileErr->expression], compileErr->message);
+        }
+        hs_free_compile_error(compileErr);
+
+        return -1;
+    }
+
+    return 0;
+}
+
+static int filter_alloc_scratch(filter_t *filter)
+{
+    if (filter == NULL || filter->db == NULL) {
+        log_error("filter or filter->db is NULL");
+        return -1;
+    }
+
+    hs_error_t err = hs_alloc_scratch(filter->db, &filter->scratch);
+    if (err != HS_SUCCESS) {
+        log_error("hs_alloc_scratch");
+        return -1;
+    }
+
+    return 0;
+}
+
+int filter_build(filter_t *filter)
+{
+    if (filter_compile_db(filter) == -1) {
+        log_error("filter_compile_db");
+        return -1;
+    }
+
+    if (filter_alloc_scratch(filter) == -1) {
+        log_error("filter_alloc_scratch");
+        return -1;
+    }
+
+    return 0;
+}
+
+
 filter_t * filter_new(void)
 {
     filter_t *p = malloc(sizeof(filter_t));
@@ -93,56 +148,22 @@ int filter_add_rule(filter_t *filter, waf_rule_t *rule)
     ++filter->idx_cursor;
 
     return 0;
-
 }
 
-int filter_compile(void *x) {
-    filter_t *f = (filter_t *) x;
-    hs_compile_error_t *compileErr = NULL;
-    hs_error_t err;
-
-    err = hs_compile_multi((const char *const *)f->rxs, f->flags, f->ids,
-            f->idx_cursor, HS_MODE_BLOCK, NULL, &f->db, &compileErr);
-
-    if (err != HS_SUCCESS) {
-        if (compileErr->expression < 0) {
-            log_error("%s", compileErr->message);
-        } else {
-            log_error("ERROR: Pattern '%d' failed with error '%s'",
-                    f->ids[compileErr->expression], compileErr->message);
-        }
-        hs_free_compile_error(compileErr);
-        return -1;
-    }
-
-    /* scratch alloc thread level */
-    return 0;
-}
-
-int filter_match(filter_t *p, hs_scratch_t *scratch, char *buff, size_t len,
-        int *matched_rule_id)
+int filter_match(filter_t *filter, char *buff, size_t len, int *matched_rule_id)
 {
     hs_error_t err;
 
-    if (p == NULL || scratch == NULL 
-            || buff == NULL  || len == 0) {
+    if (filter == NULL || buff == NULL  || len == 0) {
         return -1;
     }
 
-    err = hs_scan(p->db, buff, len, 0, scratch, on_match, matched_rule_id);
+    err = hs_scan(filter->db, buff, len, 0, filter->scratch, on_match, matched_rule_id);
     if (err != HS_SUCCESS) {
         return 0;
     }
-    return *matched_rule_id;
-}
 
-int filter_alloc_scratch(void *h, void **pp_scratch) {
-    filter_t *p = (filter_t *) h;
-    hs_error_t err = hs_alloc_scratch(p->db, (hs_scratch_t **)pp_scratch);
-    if (err != HS_SUCCESS) {
-        return -1;
-    }
-    return 0;
+    return *matched_rule_id;
 }
 
 void filter_show(filter_t *filter)
