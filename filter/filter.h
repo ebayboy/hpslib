@@ -29,7 +29,7 @@ void filter_destroy(filter_t *filter);
 
 void filter_show(filter_t *filter);
 
-int filter_match(filter_t *p, char *buff, size_t len, int *matched_rule_id);
+int filter_match(filter_t *p, const char *buff, size_t len, int *matched_rule_id);
 
 int filter_build(filter_t *filter);
 

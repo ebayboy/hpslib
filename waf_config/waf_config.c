@@ -218,7 +218,8 @@ out:
 
 static void waf_config_secrule_show(waf_rule_t *rule)
 {
-    log_info("rule->id:[%d] mz:[%s] rx:[%s]", rule->id, rule->mz, rule->rx);
+    log_info("rule->id:[%d] mz:[%s] rx:[%s]", 
+            rule->id, rule->mz, rule->rx);
 }
 
 void waf_config_show(waf_config_t *cfg)

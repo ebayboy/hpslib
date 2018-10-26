@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#include "common.h"
+
 long fsize(FILE *fp)
 {
     long n;
@@ -47,4 +49,21 @@ void strim(char *str)
     return;
 }
 
+unsigned int waf_hash_strlow(
+        unsigned char *dst, 
+        const unsigned char *src, 
+        size_t n)
+{
+    unsigned int key;
 
+    key = 0;
+
+    while (n--) {
+        *dst = waf_tolower(*src);
+        key = waf_hash(key, *dst);
+        dst++;
+        src++;
+    }
+
+    return key;
+}

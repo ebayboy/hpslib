@@ -150,11 +150,12 @@ int filter_add_rule(filter_t *filter, waf_rule_t *rule)
     return 0;
 }
 
-int filter_match(filter_t *filter, char *buff, size_t len, int *matched_rule_id)
+int filter_match(filter_t *filter, const char *buff, size_t len, int *matched_rule_id)
 {
     hs_error_t err;
 
-    if (filter == NULL || buff == NULL  || len == 0) {
+    if (filter == NULL || buff == NULL  
+            || len == 0 || matched_rule_id == NULL) {
         return -1;
     }
 

@@ -46,14 +46,10 @@ match_t * match_new()
     return new;
 }
 
-int match_add_rule(match_t *matcher, waf_rule_t *rule, const char *mz)
+int match_add_rule(match_t *matcher, waf_rule_t *rule)
 {
     if (matcher == NULL || rule == NULL || matcher->filter == NULL) {
         return -1;
-    }
-
-    if (strlen(matcher->mz) == 0) {
-        strncpy(matcher->mz, mz, sizeof(matcher->mz) -1 );
     }
 
     return filter_add_rule(matcher->filter, rule);
@@ -61,7 +57,7 @@ int match_add_rule(match_t *matcher, waf_rule_t *rule, const char *mz)
 
 void match_show(match_t *matcher)
 {
-    log_info("mz:[%s]\n", matcher->mz);
+    log_info("mz:[%s] mz_hash:[%u]\n", matcher->mz, matcher->mz_hash);
     filter_show(matcher->filter);
 }
 
@@ -75,4 +71,12 @@ int match_build(match_t *matcher)
 }
 
 
+int match_match(match_t *matcher, const char *buff, size_t len, int *matched_rule_id)
+{
+    if (matcher == NULL || buff == NULL 
+            || len == 0  || matched_rule_id == NULL) {
+        return -1;
+    }
+    return filter_match(matcher->filter, buff, len, matched_rule_id);
+}
 

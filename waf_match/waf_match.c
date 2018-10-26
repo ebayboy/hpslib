@@ -43,6 +43,7 @@ static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_confi
     int i;
     char buf[WAF_RULE_MZS_LEN] = {0};
     char *ptrim, *token;
+    unsigned char mz_hash_str[WAF_MZ_MAX] = {0};
 
     if (waf_matcher == NULL || rule == NULL) {
         return -1;
@@ -72,8 +73,10 @@ static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_confi
                 if ((matcher = match_new()) == NULL) {
                     return -1;
                 }
+                strncpy(matcher->mz, ptrim, sizeof(matcher->mz) - 1);
+                matcher->mz_hash = waf_hash_strlow(
+                        mz_hash_str, matcher->mz, strlen(matcher->mz));
             }
-            strncpy(matcher->mz, ptrim, sizeof(matcher->mz) - 1);
 
             match_add_rule(matcher, rule, ptrim);
             log_info("id:[%d] macher->mz:[%s]", rule->id, matcher->mz);
@@ -178,5 +181,51 @@ void waf_match_show(waf_match_t *waf_matcher)
             match_show(matcher);
         }
     }
+}
+
+int waf_match_match(waf_match_t *waf_matcher, 
+        const unsigned char *mz,
+        const unsigned char *buff, 
+        size_t len, 
+        int *matched_rule_id)
+{
+    match_t *matcher;
+    int i;
+    unsigned int mz_hash = 0;
+    unsigned char mz_hash_str[WAF_MZ_MAX] = {0};
+
+    if (mz == NULL || buff == NULL 
+            || matched_rule_id == NULL
+            || waf_matcher == NULL
+            || len == 0) {
+        return -1;
+    }
+
+    if (strlen(mz) > WAF_MZ_MAX) {
+        log_error("mz length %d > WAF_MZ_MAX %d", strlen(mz), WAF_MZ_MAX);
+        return -1;
+    }
+
+    mz_hash = waf_hash_strlow(mz_hash_str, mz, strlen(mz));
+    if (mz_hash == 0) {
+        log_error("[%s] ngx_hash_strlow mz_has == 0", mz);
+        return -1;
+    }
+
+    for (i = 0 ; i < waf_matcher->matcher_cursor; i++ ) {
+        matcher = waf_matcher->matchers[i];
+        if (matcher == NULL) {
+            continue;
+        }
+
+        if (mz_hash != matcher->mz_hash) {
+            continue;
+        }
+        
+        return match_match(matcher,buff,len,matched_rule_id);
+    }
+
+
+    return 0;
 }
 
