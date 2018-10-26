@@ -93,3 +93,21 @@ void waf_show()
     waf_match_show(&waf->waf_match);
 }
 
+int waf_match(const unsigned char *mz,
+        const unsigned char *buff,
+        size_t blen, 
+        int *matched_rule_id)
+{
+    if (mz == NULL 
+            || buff == NULL
+            || blen == 0
+            || matched_rule_id == NULL
+            || strlen(mz) == 0
+            || strlen(buff) == 0) {
+        return -1;
+    }
+
+    return waf_match_match(&waf->waf_match, 
+            mz, buff, blen, matched_rule_id);
+}
+
