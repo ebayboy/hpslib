@@ -65,4 +65,14 @@ void match_show(match_t *matcher)
     filter_show(matcher->filter);
 }
 
+int match_build(match_t *matcher)
+{
+    if (matcher == NULL || matcher->filter == NULL) {
+        return -1;
+    }
+   
+    return filter_build(matcher->filter);
+}
+
+
 
