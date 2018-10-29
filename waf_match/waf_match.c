@@ -23,13 +23,13 @@ static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
         return NULL;
     }
 
-    for (i = 0;i < WAF_MZ_MAX;i++) {
+    for (i = 0;i < waf_matcher->matcher_cursor;i++) {
         matcher = waf_matcher->matchers[i];
         if (matcher == NULL) {
             continue;
         }
         if (strcasecmp(matcher->mz, mz) == 0) {
-            matcher;
+            return matcher;
         }
     }
 
@@ -76,12 +76,12 @@ static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_confi
                 strncpy(matcher->mz, ptrim, sizeof(matcher->mz) - 1);
                 matcher->mz_hash = waf_hash_strlow(
                         mz_hash_str, matcher->mz, strlen(matcher->mz));
+                waf_matcher->matchers[waf_matcher->matcher_cursor++] = matcher;
             }
 
             match_add_rule(matcher, rule, ptrim);
             log_info("id:[%d] macher->mz:[%s]", rule->id, matcher->mz);
             token = strtok(NULL,",");
-            waf_matcher->matchers[waf_matcher->matcher_cursor++] = matcher;
         }
     }
 
@@ -170,10 +170,11 @@ void waf_match_show(waf_match_t *waf_matcher)
         return ;
     }
 
-    log_info("waf_engine:%d\nwaf_action:%d\nwaf_id:[%s]\n",
+    log_info("waf_engine:%d\nwaf_action:%d\nwaf_id:[%s] waf_match_cursor:%d\n",
             waf_matcher->waf_engine,
             waf_matcher->waf_action,
-            waf_matcher->waf_id);
+            waf_matcher->waf_id,
+            waf_matcher->matcher_cursor);
 
     for (i = 0; i< waf_matcher->matcher_cursor; i++) {
         matcher = waf_matcher->matchers[i];
