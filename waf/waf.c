@@ -9,6 +9,7 @@
 #include "waf_match.h"
 #include "filter.h"
 #include "waf_config.h"
+#include "waf_config.h"
 
 typedef struct {
     FILE *log_fp;

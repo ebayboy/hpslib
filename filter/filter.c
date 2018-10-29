@@ -12,6 +12,7 @@
 #include "log.h"
 #include "common.h"
 #include "filter.h"
+#include "waf_config.h"
 
 static int filter_compile_db(filter_t *f) 
 {
