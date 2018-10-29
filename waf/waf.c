@@ -10,6 +10,7 @@
 #include "filter.h"
 #include "waf_config.h"
 #include "waf_config.h"
+#include "waf.h"
 
 typedef struct {
     FILE *log_fp;
@@ -111,4 +112,17 @@ int waf_match(const unsigned char *mz,
     return waf_match_match(&waf->waf_match, 
             mz, buff, blen, matched_rule_id);
 }
+
+int waf_header_add(waf_data_t *data, str_t key, str_t value)
+{
+
+    return 0;
+}
+
+int waf_var_add(waf_data_t *data, str_t key, str_t value)
+{
+
+    return 0;
+}
+
 
