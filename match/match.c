@@ -75,8 +75,10 @@ int match_match(match_t *matcher, const char *buff, size_t len, int *matched_rul
 {
     if (matcher == NULL || buff == NULL 
             || len == 0  || matched_rule_id == NULL) {
+        log_error("input error.");
         return -1;
     }
+
     return filter_match(matcher->filter, buff, len, matched_rule_id);
 }
 

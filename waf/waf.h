@@ -3,6 +3,24 @@
 
 #include "list.h"
 
+/* ================= WAF module ==================== */
+typedef enum {
+    SCAN_NOT_MATCHED = 0,
+    SCAN_MATCHED = 1,
+} scan_result_e;
+
+int waf_init(const char *log_fname, const char *cfg_fname);
+
+void waf_fini(void);
+
+void waf_show();
+
+scan_result_e waf_match(const unsigned char *mz,
+        const unsigned char *buff,
+        size_t blen, 
+        int *matched_rule_id);
+
+/* =============== waf data API ==================== */
 typedef enum {
     HTTP_UNKNOWN,
     HTTP_GET,
@@ -22,48 +40,23 @@ typedef enum {
     HTTP_TRACE
 } http_method_e;
 
-typedef struct {
-    size_t          len;
-    unsigned char  *data;
-} str_t;
+typedef enum {
+    PARAM_HDR_TYPE = 0,
+    PARAM_VAR_TYPE = 1
+} param_type_t;
 
-typedef struct {
-    list_head_t list;
-    str_t key;
-    str_t value;
-} header_node_t;
+void * waf_data_create(
+        http_method_e method,
+        unsigned char  *uri, size_t uri_len,
+        unsigned char *args, size_t args_len,
+        unsigned char *request_body, size_t req_len);
 
-typedef struct {
-    list_head_t list;
-    str_t key;
-    str_t value;
-} var_node_t;
+void waf_data_destroy(void *waf_data);
 
-typedef struct {
-    http_method_e method;
-    str_t uri;
-    str_t args;
-    str_t request_body;
-
-    void * headers_head; /* var in headers */
-    void * vars_head;    /* var not in header, self defined var*/
-} waf_data_t;
-
-int waf_header_add(waf_data_t *data, str_t key, str_t value);
-int waf_var_add(waf_data_t *data, str_t key, str_t value);
-
-
-
-int waf_init(const char *log_fname, const char *cfg_fname);
-
-void waf_fini(void);
-
-void waf_show();
-
-int waf_match(const unsigned char *mz,
-        const unsigned char *buff,
-        size_t blen, 
-        int *matched_rule_id);
+int waf_data_add_param(void *waf_data,
+        param_type_t type,
+        unsigned char *key_data, size_t key_len,
+        unsigned char *value_data, size_t value_len);
 
 #endif
 

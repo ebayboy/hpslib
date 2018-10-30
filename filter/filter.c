@@ -157,6 +157,7 @@ int filter_match(filter_t *filter, const char *buff, size_t len, int *matched_ru
 
     if (filter == NULL || buff == NULL  
             || len == 0 || matched_rule_id == NULL) {
+        log_error("input error");
         return -1;
     }
 
@@ -165,7 +166,7 @@ int filter_match(filter_t *filter, const char *buff, size_t len, int *matched_ru
         return 0;
     }
 
-    return *matched_rule_id;
+    return 1;
 }
 
 void filter_show(filter_t *filter)
