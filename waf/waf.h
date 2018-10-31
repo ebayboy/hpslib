@@ -5,20 +5,18 @@
 
 /* ================= WAF module ==================== */
 typedef enum {
+    SCAN_ERROR = -1,
     SCAN_NOT_MATCHED = 0,
     SCAN_MATCHED = 1,
 } scan_result_e;
 
 int waf_init(const char *log_fname, const char *cfg_fname);
 
+void waf_show(void);
+
 void waf_fini(void);
 
-void waf_show();
-
-scan_result_e waf_match(const unsigned char *mz,
-        const unsigned char *buff,
-        size_t blen, 
-        int *matched_rule_id);
+scan_result_e waf_match(void *waf_data, int *matched_rule_id);
 
 /* =============== waf data API ==================== */
 typedef enum {

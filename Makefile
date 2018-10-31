@@ -6,7 +6,7 @@ INCS= -I$(PWD)/hyperscan/include/
 MYLIB = libhps.a
 
 # change to you project file dir
-VPATH = common:test:waf_config:filter:log:waf:match:waf_match
+VPATH = common:test:waf_config:filter:log:waf:match:waf_match:deps
 	# the obj dir
 	OBJDIR = obj
 

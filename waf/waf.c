@@ -30,7 +30,6 @@ typedef struct {
     str_t request_body;
 
     list_head_t headers_head; /* var in headers */
-    list_head_t vars_head;    /* var not in header, self defined var */
 } waf_data_t;
 
 typedef struct {
@@ -116,22 +115,61 @@ void waf_show()
     waf_match_show(&waf->waf_match);
 }
 
-scan_result_e waf_match(const unsigned char *mz,
-        const unsigned char *buff,
-        size_t blen, 
-        int *matched_rule_id)
+scan_result_e waf_match_uri(str_t *uri, int *matched_rule_id)
 {
-    if (mz == NULL 
-            || buff == NULL
-            || blen == 0
-            || matched_rule_id == NULL
-            || strlen(mz) == 0
-            || strlen(buff) == 0) {
+    unsigned char *buf = NULL;
+    int dlen = 0;
+    scan_result_e rc = SCAN_NOT_MATCHED;
+    char *mz = "$uri";
+
+    if (uri == NULL ||
+            uri->data == NULL ||
+            uri->len == 0 ||
+            matched_rule_id == NULL) {
+        return  SCAN_ERROR;
+    }
+
+    if ((buf = malloc(uri->len)) == NULL) {
+        return SCAN_ERROR;
+    }
+
+    /* decode */
+    dlen = decodeURI(buf, uri->len, uri->data, uri->len);
+    rc = waf_match_match(&waf->waf_match, mz, buf, dlen, matched_rule_id);
+
+out:
+    if (buf) {
+        free(buf);
+    }
+    
+    return rc;
+}
+
+scan_result_e waf_match(void *waf_data, int *matched_rule_id)
+{
+    waf_data_t *data  = NULL;
+
+    if (waf_data == NULL || matched_rule_id == NULL) {
         log_error("input error.");
         return -1;
     }
 
-    return waf_match_match(&waf->waf_match, mz, buff, blen, matched_rule_id);
+    data = (waf_data_t *)waf_data;
+
+    /* match all */
+
+    /* TODO 自适应解码 */
+
+    /* match uri && var */
+    if (data->uri.data && data->uri.len) {
+        return waf_match_uri(&data->uri, matched_rule_id);
+    }
+
+    /* match args */
+
+    /* match body */
+
+    return SCAN_NOT_MATCHED;
 }
 
 void * waf_data_create(
@@ -148,7 +186,6 @@ void * waf_data_create(
     memset(data, 0, sizeof(waf_data_t));
 
     INIT_LIST_HEAD(&data->headers_head);
-    INIT_LIST_HEAD(&data->vars_head);
 
     data->method = method;
 
@@ -177,7 +214,7 @@ int waf_data_add_param(void *waf_data,
         return -1;
     }
 
-    if (type != PARAM_HDR_TYPE && type != PARAM_VAR_TYPE) {
+    if (type != PARAM_HDR_TYPE) {
         log_error("input type error type:%d", type);
         return -1;
     }
@@ -216,8 +253,6 @@ int waf_data_add_param(void *waf_data,
     /* add node to list */
     if (type == PARAM_HDR_TYPE) {
         list_add_tail(&node->list, &data->headers_head);
-    } else if (type == PARAM_VAR_TYPE) {
-        list_add_tail(&node->list, &data->vars_head);
     } 
 
     return 0;
