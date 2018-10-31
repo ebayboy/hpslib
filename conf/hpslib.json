@@ -14,7 +14,7 @@
             },
             {
                 "id": "10020",
-                "mz": "$u_uri,$user_agent",
+                "mz": "$uri,$user_agent",
                 "rx": "/etc/(passwd|shadow|rc|boot)"
             }
         ]

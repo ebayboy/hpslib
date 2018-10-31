@@ -12,6 +12,18 @@
 #include "waf_config.h"
 #include "waf.h"
 
+#define WAF_MZ_URI              "$uri"
+#define WAF_MZ_U_URI            "$u_uri"
+
+#define WAF_MZ_ARGS             "$args"
+#define WAF_MZ_U_ARGS           "$u_args"
+
+#define WAF_MZ_REQ_BODY         "$request_body"
+#define WAF_MZ_U_REQ_BODY       "$u_request_body"
+
+
+
+
 typedef struct {
     size_t          len;
     unsigned char  *data;
@@ -115,26 +127,25 @@ void waf_show()
     waf_match_show(&waf->waf_match);
 }
 
-scan_result_e waf_match_uri(str_t *uri, int *matched_rule_id)
+scan_result_e waf_match_ori(str_t *str, int *matched_rule_id, const char *mz)
 {
     unsigned char *buf = NULL;
     int dlen = 0;
     scan_result_e rc = SCAN_NOT_MATCHED;
-    char *mz = "$uri";
 
-    if (uri == NULL ||
-            uri->data == NULL ||
-            uri->len == 0 ||
+    if (str == NULL ||
+            str->data == NULL ||
+            str->len == 0 ||
             matched_rule_id == NULL) {
         return  SCAN_ERROR;
     }
 
-    if ((buf = malloc(uri->len)) == NULL) {
+    if ((buf = malloc(str->len)) == NULL) {
         return SCAN_ERROR;
     }
 
     /* decode */
-    dlen = decodeURI(buf, uri->len, uri->data, uri->len);
+    dlen = decodeURI(buf, str->len, str->data, str->len);
     rc = waf_match_match(&waf->waf_match, mz, buf, dlen, matched_rule_id);
 
 out:
@@ -145,9 +156,57 @@ out:
     return rc;
 }
 
+static waf_match_unparsed(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+
+    /* match uri */
+    if (data->uri.data && data->uri.len > 0) {
+        rc = waf_match_ori(&data->uri, matched_rule_id, WAF_MZ_URI);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    /* match args */
+    if (data->args.data && data->args.len > 0) {
+        rc = waf_match_ori(&data->args, matched_rule_id, WAF_MZ_ARGS);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    /* request body */
+    if (data->request_body.data && data->request_body.len > 0) {
+        rc = waf_match_ori(&data->request_body, matched_rule_id, WAF_MZ_REQ_BODY);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
+static waf_match_parsed(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+
+    /* match uri */
+    if (data->uri.data && data->uri.len > 0) {
+        rc = waf_match_ori(&data->uri, matched_rule_id, WAF_MZ_URI);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
+
 scan_result_e waf_match(void *waf_data, int *matched_rule_id)
 {
     waf_data_t *data  = NULL;
+    int rc = SCAN_NOT_MATCHED;
 
     if (waf_data == NULL || matched_rule_id == NULL) {
         log_error("input error.");
@@ -156,18 +215,15 @@ scan_result_e waf_match(void *waf_data, int *matched_rule_id)
 
     data = (waf_data_t *)waf_data;
 
-    /* match all */
-
-    /* TODO 自适应解码 */
-
-    /* match uri && var */
-    if (data->uri.data && data->uri.len) {
-        return waf_match_uri(&data->uri, matched_rule_id);
+    /* unparsed */
+    if ((rc = waf_match_unparsed(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
     }
 
-    /* match args */
-
-    /* match body */
+    /* parsed */
+    if ((rc = waf_match_parsed(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
 
     return SCAN_NOT_MATCHED;
 }

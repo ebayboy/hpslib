@@ -163,10 +163,18 @@ int filter_match(filter_t *filter, const char *buff, size_t len, int *matched_ru
 
     err = hs_scan(filter->db, buff, len, 0, filter->scratch, on_match, matched_rule_id);
     if (err != HS_SUCCESS) {
-        return 0;
+        /* 匹配发生错误 */
+        log_error("ERROR: Unable to scan input buffer. Exiting.\n");
+        return -1;
     }
 
-    return 1;
+    /* matched */
+    if (*matched_rule_id > 0) {
+        return 1;
+    } 
+
+    /* not match */
+    return 0;
 }
 
 void filter_show(filter_t *filter)
