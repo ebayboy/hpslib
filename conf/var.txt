@@ -4,12 +4,14 @@
 1. 不需要解码的部分
 $uri    所有规则    Nginx自有变量   /foo/bar.php?arg=baz 中，$uri的值为：/foo/bar.php
 $request_uri    所有规则    Nginx自有变量   /foo/bar.php?arg=baz 中，$request_uri的值为：/foo/bar.php?arg=baz
-$http_cookie    所有规则    Nginx自有变量    
+$request_body   所有规则    请求body域所有内容，不做decode解码   
+
 $http_referer   所有规则    Nginx自有变量    
 $http_user_agent    所有规则    Nginx自有变量    
-$request_headers    所有规则    请求头部域所有字符，没有做任何解码
+
 $url    所有规则    $scheme://$host$request_uri 字符串   
-$request_body   所有规则    请求body域所有内容，不做decode解码   
+$http_cookie    所有规则    Nginx自有变量    
+$request_headers    所有规则    请求头部域所有字符，没有做任何解码
 
 
 2. http解码部分

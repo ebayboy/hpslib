@@ -3,6 +3,9 @@
 
 #include "list.h"
 
+#define WAF_HDR_UA          "User-Agent"
+#define WAF_HDR_REFERER     "Referer"
+
 /* ================= WAF module ==================== */
 typedef enum {
     SCAN_ERROR = -1,
@@ -48,6 +51,8 @@ void * waf_data_create(
         unsigned char  *uri, size_t uri_len,
         unsigned char *args, size_t args_len,
         unsigned char *request_body, size_t req_len);
+
+void waf_data_show(void *waf_data);
 
 void waf_data_destroy(void *waf_data);
 

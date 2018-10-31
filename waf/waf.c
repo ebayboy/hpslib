@@ -21,9 +21,6 @@
 #define WAF_MZ_REQ_BODY         "$request_body"
 #define WAF_MZ_U_REQ_BODY       "$u_request_body"
 
-
-
-
 typedef struct {
     size_t          len;
     unsigned char  *data;
@@ -33,7 +30,7 @@ typedef struct {
     list_head_t list;
     str_t key;
     str_t value;
-} param_node_t;
+} waf_param_t;
 
 typedef struct {
     http_method_e method;
@@ -41,7 +38,8 @@ typedef struct {
     str_t args;
     str_t request_body;
 
-    list_head_t headers_head; /* var in headers */
+    list_head_t headers_head;
+    list_head_t vars_head;  
 } waf_data_t;
 
 typedef struct {
@@ -242,6 +240,7 @@ void * waf_data_create(
     memset(data, 0, sizeof(waf_data_t));
 
     INIT_LIST_HEAD(&data->headers_head);
+    INIT_LIST_HEAD(&data->vars_head);
 
     data->method = method;
 
@@ -262,7 +261,7 @@ int waf_data_add_param(void *waf_data,
         unsigned char *key_data, size_t key_len,
         unsigned char *value_data, size_t value_len)
 {
-    param_node_t *node = NULL;
+    waf_param_t *node = NULL;
     waf_data_t *data = waf_data;
 
     if (data == NULL || key_data == NULL || key_len ==0
@@ -270,84 +269,121 @@ int waf_data_add_param(void *waf_data,
         return -1;
     }
 
-    if (type != PARAM_HDR_TYPE) {
+    if (type != PARAM_HDR_TYPE && type != PARAM_VAR_TYPE) {
         log_error("input type error type:%d", type);
         return -1;
     }
 
     /* new node */
-    node = malloc(sizeof(param_node_t));
+    node = malloc(sizeof(waf_param_t));
     if (node == NULL) {
         return -1;
     }
-    memset(node, 0, sizeof(param_node_t));
+    memset(node, 0, sizeof(waf_param_t));
 
-    /* new key */
-    node->key.data = malloc(key_len);
-    if (node->key.data == NULL) {
-        free(node);
-        return -1;
-    }
-    memset(node->key.data, 0, key_len);
-    memcpy(node->key.data, key_data, key_len);
-    node->key.len = key_len;
+#define DATA_SET_ATTR(x, x_len, x_data) \
+    node->x.data = malloc(x_len);   \
+    if (node->x.data == NULL) { \
+        free(node); \
+        return -1;  \
+    }       \
+    node->x.len = x_len;    \
+    memset(node->x.data, 0, x_len); \
+    memcpy(node->x.data, x_data, x_len);
 
-    /* new value */
-    node->value.data = malloc(node->value.len);
-    if (node->value.data == NULL) {
-        if (node->key.data) {
-            free(node->key.data);
-        }
+    DATA_SET_ATTR(key, key_len, key_data);
+    DATA_SET_ATTR(value, value_len, value_data);
 
-        free(node);
-        return -1;
-    }
-    memset(node->value.data, 0, node->value.len);
-    memcpy(node->value.data, value_data, value_len);
-    node->value.len = value_len;
+#undef DATA_SET_ATTR
 
     /* add node to list */
     if (type == PARAM_HDR_TYPE) {
         list_add_tail(&node->list, &data->headers_head);
-    } 
+    }  else if (type == PARAM_VAR_TYPE) {
+        list_add_tail(&node->list, &data->vars_head);
+    } else {
+        return -1;
+    }
 
     return 0;
 }
 
-static void waf_header_free(param_node_t *header)
+void waf_data_show(void *waf_data)
 {
-    if(header == NULL) {
+    waf_data_t *data = NULL;
+    waf_param_t *param = NULL;
+
+    if (waf_data == NULL) {
         return ;
     }
 
-    if (header->key.data) {
-        free(header->key.data);
-        header->key.len = 0;
+    data = (waf_data_t *)waf_data;
+
+    //printf("%.*s\n", str_len, str); 
+
+    log_info("method:%d", data->method);
+    log_info("uri:%.*s", data->uri.len, data->uri.data);
+    log_info("args:%.*s", data->args.len, data->args.data);
+    log_info("request_body:%.*s", data->request_body.len, data->request_body.data);
+
+    log_info("Headers:");
+    if (!list_empty(&data->headers_head)) {
+        list_for_each_entry(param, &data->headers_head, list) {
+            log_info("%.*s:%.*s", param->key.len, param->key.data, 
+                    param->value.len, param->value.data);
+        }
     }
 
-    if (header->value.data) {
-        free(header->value.data);
-        header->value.len = 0;
+    log_info("Vars:");
+    if (!list_empty(&data->vars_head)) {
+        list_for_each_entry(param, &data->vars_head, list) {
+            log_info("%.*s:%.*s", param->key.len, param->key.data, 
+                    param->value.len, param->value.data);
+        }
     }
-
-    free(header);
 }
 
-static void waf_headers_free(list_head_t *headers_head)
+static void waf_param_free(waf_param_t *node)
 {
-    param_node_t *node = NULL;
-
-    if (headers_head == NULL) {
+    if(node == NULL) {
         return ;
     }
 
-    if (list_empty(headers_head)) {
+    if (node->key.data) {
+        free(node->key.data);
+        node->key.len = 0;
+    }
+
+    if (node->value.data) {
+        free(node->value.data);
+        node->value.len = 0;
+    }
+
+    free(node);
+}
+
+static void waf_params_free(waf_data_t *data)
+{
+    waf_param_t *node, *tmp = NULL;
+
+    if (data == NULL) {
         return ;
     }
 
-    list_for_each_entry(node, headers_head, list) {
-        list_del(&node->list);
-        waf_header_free(node);
+    if (!list_empty(&data->headers_head)) {
+        list_for_each_entry_safe(
+                node, tmp, &data->headers_head, list) {
+            list_del(&node->list);
+            waf_param_free(node);
+        }
+    }
+
+    if (!list_empty(&data->vars_head)) {
+        list_for_each_entry_safe(
+                node, tmp,  &data->vars_head, list) {
+            list_del(&node->list);
+            waf_param_free(node);
+        }
     }
 
     return ;
@@ -361,7 +397,7 @@ void waf_data_destroy(void *waf_data)
         return;
     }
     
-    waf_headers_free(&data->headers_head);
+    waf_params_free(data);
 
     free(data);
 }
