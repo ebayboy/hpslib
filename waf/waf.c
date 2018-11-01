@@ -39,7 +39,7 @@ typedef struct {
     str_t request_body;
 
     list_head_t headers_head;
-    list_head_t vars_head;  
+    list_head_t vars_head;   /* not used now */
 } waf_data_t;
 
 typedef struct {
@@ -326,7 +326,7 @@ void waf_data_show(void *waf_data)
     log_info("args:%.*s", data->args.len, data->args.data);
     log_info("request_body:%.*s", data->request_body.len, data->request_body.data);
 
-    log_info("Headers:");
+    log_info("\nHeaders:");
     if (!list_empty(&data->headers_head)) {
         list_for_each_entry(param, &data->headers_head, list) {
             log_info("%.*s:%.*s", param->key.len, param->key.data, 
@@ -334,7 +334,7 @@ void waf_data_show(void *waf_data)
         }
     }
 
-    log_info("Vars:");
+    log_info("\nVars:");
     if (!list_empty(&data->vars_head)) {
         list_for_each_entry(param, &data->vars_head, list) {
             log_info("%.*s:%.*s", param->key.len, param->key.data, 
