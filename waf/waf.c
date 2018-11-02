@@ -12,14 +12,41 @@
 #include "waf_config.h"
 #include "waf.h"
 
-#define WAF_MZ_URI              "$uri"
-#define WAF_MZ_U_URI            "$u_uri"
 
-#define WAF_MZ_ARGS             "$args"
-#define WAF_MZ_U_ARGS           "$u_args"
+/* uri */
+#define WAF_MZ_URI                  "$uri"
+#define WAF_MZ_ARGS                 "$args"
+#define WAF_MZ_REQUEST_URI          "$request_uri"
+#define WAF_MZ_REQUEST_BODY         "$request_body"
+#define WAF_MZ_HTTP_REFERER         "$http_referer"
+#define WAF_MZ_HTTP_USER_AGENT      "$http_user_agent"
+#define wAF_MZ_HTTP_URL             "$url"
+#define wAF_MZ_HTTP_COOKIE          "$http_cookie"
+#define WAF_MZ_REQUEST_HEADERS      "$request_headers"
 
-#define WAF_MZ_REQ_BODY         "$request_body"
-#define WAF_MZ_U_REQ_BODY       "$u_request_body"
+/* html decode */
+#define WAF_MZ_U_URI                "$u_uri"
+#define WAF_MZ_U_ARGS               "$u_args"
+#define WAF_MZ_U_REQUEST_URI        "$u_request_uri"
+#define WAF_MZ_U_REQUEST_BODY       "$u_request_body"
+#define WAF_MZ_U_HTTP_REFERER       "$u_http_referer"
+#define WAF_MZ_U_HTTP_USER_AGENT    "$u_http_user_agent"
+#define wAF_MZ_U_HTTP_URL           "$u_url"
+#define wAF_MZ_U_HTTP_COOKIE        "$u_http_cookie"
+#define WAF_MZ_U_REQUEST_HEADERS    "$u_request_headers"
+
+/* define decode */
+#define WAF_MZ_ARGS_KEY             "$args_key"
+#define WAF_MZ_ARGS_VALUE           "$args_value"
+#define WAF_MZ_U_COOKIE_KEY         "$u_cookie_key"
+#define WAF_MZ_U_COOKIE_VALUE       "$u_cookie_value"
+#define WAF_MZ_U_ARGS_KEY           "$u_args_key"
+#define WAF_MZ_U_ARGS_VALUE         "$u_args_value"
+#define WAF_MZ_U_POST_KEY           "$u_post_key"
+#define WAF_MZ_U_POST_VALUE         "$u_post_value"
+#define WAF_MZ_U_FILENAME           "$file_name"
+#define WAF_MZ_U_FILE_CONTENT       "$file_content"
+
 
 typedef struct {
     size_t          len;
@@ -127,6 +154,21 @@ void waf_show()
 
 scan_result_e waf_match_ori(str_t *str, int *matched_rule_id, const char *mz)
 {
+    scan_result_e rc = SCAN_NOT_MATCHED;
+
+    if (str == NULL ||
+            str->data == NULL ||
+            str->len == 0 ||
+            matched_rule_id == NULL) {
+        return  SCAN_ERROR;
+    }
+
+    rc = waf_match_match(&waf->waf_match, mz, str->data, str->len, matched_rule_id);
+    return rc;
+}
+
+scan_result_e waf_match_unescapted(str_t *str, int *matched_rule_id, const char *mz)
+{
     unsigned char *buf = NULL;
     int dlen = 0;
     scan_result_e rc = SCAN_NOT_MATCHED;
@@ -154,6 +196,7 @@ out:
     return rc;
 }
 
+
 static waf_match_unparsed(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -176,11 +219,44 @@ static waf_match_unparsed(waf_data_t *data, int *matched_rule_id)
 
     /* request body */
     if (data->request_body.data && data->request_body.len > 0) {
-        rc = waf_match_ori(&data->request_body, matched_rule_id, WAF_MZ_REQ_BODY);
+        rc = waf_match_ori(&data->request_body, 
+                matched_rule_id, WAF_MZ_REQUEST_BODY);
         if (rc == SCAN_MATCHED) {
             return rc;
         }
     }
+
+    return rc;
+}
+
+/* TODO: ? */
+static int ngx_http_waf_match_handler (
+        int type,
+        char *dec_out,
+        int dec_out_len)
+{
+    int rc = 0;
+#if 0 
+    struct passThrough *pt = (struct passThrough  *)passThrough;
+    waf_context_t *ctx;
+    int ret = 0, i;
+
+    if (dec_out == NULL
+            || dec_out_len <= 0
+            || dec_out_len > DECOUT_SIZE_MAX ) {
+        return ret;
+    }
+
+    if ((ctx = waf_ctx_get(pt->r)) == NULL || pt == NULL) {
+        return ret;
+    }
+
+    for (i = 0; i < DECODE_TYPE_SIZE; i++) {
+        if (pt->m->decode_type[i] == type) {
+            ret += pt->m->do_match((char*)dec_out, dec_out_len, *pt->set_result);
+        }
+    }
+#endif
 
     return rc;
 }
@@ -196,6 +272,18 @@ static waf_match_parsed(waf_data_t *data, int *matched_rule_id)
             return rc;
         }
     }
+
+#if 0
+    ret += ngx_http_waf_data_decode(
+            (char *)cl->buf->pos, 
+            size, 
+            ngx_http_waf_match_handler, 
+            &pt, 
+            NULL, /* content_type */
+            do_unbase64,  
+            do_unescaped,
+            do_gbk2utf8);
+#endif
 
     return rc;
 }
