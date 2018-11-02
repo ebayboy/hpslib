@@ -57,6 +57,8 @@ var->value  hdr
 #define WAF_MZ_U_FILENAME           "$file_name"
 #define WAF_MZ_U_FILE_CONTENT       "$file_content"
 
+#define WAF_MZ_UNESCAPT_PREFIX      "u_"
+
 typedef struct {
     size_t          len;
     unsigned char  *data;
@@ -65,7 +67,9 @@ typedef struct {
 typedef struct {
     list_head_t list;
     str_t key;
+    unsigned int key_hash;
     str_t value;
+    unsigned int value_hash;
 } waf_param_t;
 
 typedef struct {
@@ -194,7 +198,6 @@ scan_result_e waf_match_unescapted(str_t *str, int *matched_rule_id,  str_t *mz)
         return SCAN_ERROR;
     }
 
-    /* decode */
     dlen = decodeURI(buf, str->len, str->data, str->len);
     rc = waf_match_match(&waf->waf_match, 
             mz->data, mz->len, buf, dlen, matched_rule_id);
@@ -206,11 +209,59 @@ scan_result_e waf_match_unescapted(str_t *str, int *matched_rule_id,  str_t *mz)
     return rc;
 }
 
-static int waf_match_headers(waf_data_t *data, int *matched_rule_id)
+static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
     waf_param_t *hdr = NULL, *var = NULL;
     list_for_each_entry(var, &data->vars_head, list) {
+        if (var->key.data == NULL || var->value.data == NULL 
+                || var->value.data == 0 || var->value.len == 0) {
+            continue;
+        }
+
+        if (var->key.len > 2 && strncasecmp(var->key.data, 
+                    WAF_MZ_UNESCAPT_PREFIX, 
+                    strlen(WAF_MZ_UNESCAPT_PREFIX)) == 0) {
+            continue;
+        }
+
+        list_for_each_entry(hdr, &data->headers_head, list) {
+            if (hdr->key.data == NULL || hdr->value.data == NULL 
+                    || hdr->value.data == 0 || hdr->value.len == 0) {
+                if (hdr->value.len != var->value.len) {
+                    continue;
+                }
+                if (strncasecmp(var->value.data, hdr->value.data, var->value.len) != 0) {
+                    continue; 
+                }
+                /* match ori */
+                rc = waf_match_ori(&hdr->key, matched_rule_id, &var->key /* mz */);
+                if (rc == SCAN_MATCHED) {
+                    return rc;
+                }
+            }
+        }
+    }
+
+    return rc;
+}
+
+static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    waf_param_t *hdr = NULL, *var = NULL;
+    list_for_each_entry(var, &data->vars_head, list) {
+        if (var->key.len < 2) {
+            continue;
+        }
+
+        /* continue not u_ start */
+        if (strncasecmp(var->key.data, 
+                    WAF_MZ_UNESCAPT_PREFIX, 
+                    strlen(WAF_MZ_UNESCAPT_PREFIX)) != 0) {
+            continue;
+        }
+
         if (var->key.data == NULL || var->value.data == NULL 
                 || var->value.data == 0 || var->value.len == 0) {
             continue;
@@ -224,7 +275,7 @@ static int waf_match_headers(waf_data_t *data, int *matched_rule_id)
                 if (strncasecmp(var->value.data, hdr->value.data, var->value.len) != 0) {
                     continue; 
                 }
-                rc = waf_match_ori(&hdr->key, matched_rule_id, &var->key /* mz */);
+                rc = waf_match_unescapted(&hdr->key, matched_rule_id, &var->key /* mz */);
                 if (rc == SCAN_MATCHED) {
                     return rc;
                 }
@@ -239,12 +290,10 @@ static int waf_match_headers(waf_data_t *data, int *matched_rule_id)
 static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
-    str_t *str, mz;
+    str_t mz;
 
     /* match uri */
     if (data->uri.data && data->uri.len > 0) {
-        str->data = WAF_MZ_URI;
-        str->len = strlen(WAF_MZ_URI);
         mz.data = WAF_MZ_URI;
         mz.len = strlen(WAF_MZ_URI);
         rc = waf_match_ori(&data->uri, matched_rule_id, &mz);
@@ -338,6 +387,40 @@ static waf_match_decode_all(waf_data_t *data, int *matched_rule_id)
     return rc;
 }
 
+static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    str_t mz;
+
+    if (data->uri.data && data->uri.len > 0) {
+        mz.data = WAF_MZ_U_URI;
+        mz.len = strlen(WAF_MZ_U_URI);
+        rc = waf_match_unescapted(&data->uri, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    if (data->args.data && data->args.len > 0) {
+        mz.data = WAF_MZ_U_ARGS;
+        mz.len = strlen(WAF_MZ_U_ARGS);
+        rc = waf_match_unescapted(&data->args, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    if (data->request_body.data && data->request_body.len > 0) {
+        mz.data = WAF_MZ_U_REQUEST_BODY;
+        mz.len = strlen(WAF_MZ_U_REQUEST_BODY);
+        rc = waf_match_unescapted(&data->request_body, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    return 0;
+}
 
 scan_result_e waf_match(void *waf_data, int *matched_rule_id)
 {
@@ -351,17 +434,23 @@ scan_result_e waf_match(void *waf_data, int *matched_rule_id)
 
     data = (waf_data_t *)waf_data;
 
-    /* ori all */
+    /* ori */
+    if ((rc = waf_match_headers_all(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
     if ((rc = waf_match_ori_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
 
-    /* unescapted all */
+    /* escapted */
     if ((rc = waf_match_unescapted_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
+    if ((rc = waf_match_headers_unescapted_all(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
 
-    /* decode all */
+    /* decode */
     if ((rc = waf_match_decode_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
@@ -406,6 +495,7 @@ int waf_data_add_param(void *waf_data,
 {
     waf_param_t *node = NULL;
     waf_data_t *data = waf_data;
+    unsigned char mz_hash_str[WAF_MZ_MAX] = {0};
 
     if (data == NULL || key_data == NULL || key_len ==0
             || value_data == NULL || value_len == 0) {
@@ -424,18 +514,19 @@ int waf_data_add_param(void *waf_data,
     }
     memset(node, 0, sizeof(waf_param_t));
 
-#define DATA_SET_ATTR(x, x_len, x_data) \
-    node->x.data = malloc(x_len);   \
+#define DATA_SET_ATTR(x)    \
+    node->x.data = malloc(x##_len);   \
     if (node->x.data == NULL) { \
         free(node); \
         return -1;  \
     }       \
-    node->x.len = x_len;    \
-    memset(node->x.data, 0, x_len); \
-    memcpy(node->x.data, x_data, x_len);
+    node->x.len = x##_len;    \
+    memset(node->x.data, 0, x##_len); \
+    memcpy(node->x.data, x##_data, x##_len);    \
+    node->x##_hash = waf_hash_strlow(mz_hash_str, node->x.data, node->x.len);  
 
-    DATA_SET_ATTR(key, key_len, key_data);
-    DATA_SET_ATTR(value, value_len, value_data);
+    DATA_SET_ATTR(key);
+    DATA_SET_ATTR(value);
 
 #undef DATA_SET_ATTR
 
@@ -480,8 +571,9 @@ void waf_data_show(void *waf_data)
     log_info("\nVars:");
     if (!list_empty(&data->vars_head)) {
         list_for_each_entry(param, &data->vars_head, list) {
-            log_info("%.*s:%.*s", param->key.len, param->key.data, 
-                    param->value.len, param->value.data);
+            log_info("key: [%.*s] key_hash:[%u]\n: value:[%.*s] value_hash:[%u]", 
+                    param->key.len, param->key.data, param->key_hash,
+                    param->value.len, param->value.data, param->value_hash);
         }
     }
 }

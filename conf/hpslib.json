@@ -7,15 +7,15 @@
     {
         "Rules": 
         [
-            {
-                "id": "10009",
-                "mz": "$u_uri",
-                "rx": "(shell|phpspy|jspspy|zecmd|wooyun|cmdexec)[\\-_]?\\d*\\.(php|php3|php4|php5|php6|php7|jsp|asp|aspx|asa|cer|cgi)($|/|;|/)"
-            },
-            {
+            {   
                 "id": "10020",
                 "mz": "$uri,$user_agent",
                 "rx": "/etc/(passwd|shadow|rc|boot)"
+            },
+            {
+                "id": "0",
+                "mz": "$u_uri",
+                "rx": "(shell|phpspy|jspspy|zecmd|wooyun|cmdexec)[\-_]?\d*\.(php|php3|php4|php5|php6|php7|jsp|asp|aspx|asa|cer|cgi)($|/|;|/)"
             }
         ]
     }
