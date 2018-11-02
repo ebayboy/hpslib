@@ -67,9 +67,9 @@ typedef struct {
 typedef struct {
     list_head_t list;
     str_t key;
-    unsigned int key_hash;
+    unsigned int key_hash;  /* used by hdr */
     str_t value;
-    unsigned int value_hash;
+    unsigned int value_hash; /* used by var */
 } waf_param_t;
 
 typedef struct {
@@ -250,6 +250,7 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
 {
     int rc = 0;
     waf_param_t *hdr = NULL, *var = NULL;
+
     list_for_each_entry(var, &data->vars_head, list) {
         if (var->key.len < 2) {
             continue;
@@ -266,15 +267,18 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
                 || var->value.data == 0 || var->value.len == 0) {
             continue;
         }
+
         list_for_each_entry(hdr, &data->headers_head, list) {
             if (hdr->key.data == NULL || hdr->value.data == NULL 
                     || hdr->value.data == 0 || hdr->value.len == 0) {
                 if (hdr->value.len != var->value.len) {
                     continue;
                 }
-                if (strncasecmp(var->value.data, hdr->value.data, var->value.len) != 0) {
+
+                if (var->value_hash != hdr->key_hash) {
                     continue; 
                 }
+
                 rc = waf_match_unescapted(&hdr->key, matched_rule_id, &var->key /* mz */);
                 if (rc == SCAN_MATCHED) {
                     return rc;
@@ -522,8 +526,7 @@ int waf_data_add_param(void *waf_data,
     }       \
     node->x.len = x##_len;    \
     memset(node->x.data, 0, x##_len); \
-    memcpy(node->x.data, x##_data, x##_len);    \
-    node->x##_hash = waf_hash_strlow(mz_hash_str, node->x.data, node->x.len);  
+    memcpy(node->x.data, x##_data, x##_len);    
 
     DATA_SET_ATTR(key);
     DATA_SET_ATTR(value);
@@ -532,8 +535,12 @@ int waf_data_add_param(void *waf_data,
 
     /* add node to list */
     if (type == PARAM_HDR_TYPE) {
+        /* hdr set key hash */
+        node->key_hash = waf_hash_strlow(mz_hash_str, node->key.data, node->key.len);  
         list_add_tail(&node->list, &data->headers_head);
     }  else if (type == PARAM_VAR_TYPE) {
+        /* var set value _hash */
+        node->value_hash = waf_hash_strlow(mz_hash_str, node->value.data, node->value.len);  
         list_add_tail(&node->list, &data->vars_head);
     } else {
         return -1;
