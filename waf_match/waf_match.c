@@ -185,9 +185,10 @@ void waf_match_show(waf_match_t *waf_matcher)
 }
 
 int waf_match_match(waf_match_t *waf_matcher, 
-        const unsigned char *mz,
+        const unsigned char *mz, 
+        size_t mz_len,
         const unsigned char *buff, 
-        size_t len, 
+        size_t blen, 
         int *matched_rule_id)
 {
     match_t *matcher;
@@ -197,17 +198,16 @@ int waf_match_match(waf_match_t *waf_matcher,
 
     if (mz == NULL || buff == NULL 
             || matched_rule_id == NULL
-            || waf_matcher == NULL
-            || len == 0) {
+            || waf_matcher == NULL) {
         return -1;
     }
 
-    if (strlen(mz) > WAF_MZ_MAX) {
+    if (mz_len > WAF_MZ_MAX) {
         log_error("mz length %d > WAF_MZ_MAX %d", strlen(mz), WAF_MZ_MAX);
         return -1;
     }
 
-    mz_hash = waf_hash_strlow(mz_hash_str, mz, strlen(mz));
+    mz_hash = waf_hash_strlow(mz_hash_str, mz, mz_len);
     if (mz_hash == 0) {
         log_error("[%s] ngx_hash_strlow mz_has == 0", mz);
         return -1;
@@ -223,7 +223,7 @@ int waf_match_match(waf_match_t *waf_matcher,
             continue;
         }
         
-        return match_match(matcher,buff,len,matched_rule_id);
+        return match_match(matcher, buff, blen, matched_rule_id);
     }
 
 

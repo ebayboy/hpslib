@@ -21,7 +21,8 @@ void waf_match_fini(waf_match_t *waf_match);
 void waf_match_show(waf_match_t *waf_matcher);
 
 int waf_match_match(waf_match_t *waf_matcher, 
-        const unsigned char *mz,
+        const unsigned char *mz, 
+        size_t mzlen,
         const unsigned char *buff, 
         size_t blen, 
         int *matched_rule_id);
