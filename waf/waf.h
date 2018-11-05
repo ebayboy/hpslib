@@ -50,6 +50,7 @@ void * waf_data_create(
         http_method_e method,
         unsigned char  *uri, size_t uri_len,
         unsigned char *args, size_t args_len,
+        unsigned char *cookies, size_t cookies_len,
         unsigned char *request_body, size_t req_len);
 
 void waf_data_show(void *waf_data);

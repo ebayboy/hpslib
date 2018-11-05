@@ -31,7 +31,7 @@ var->value  hdr
 #define WAF_MZ_HTTP_REFERER         "$http_referer"
 #define WAF_MZ_HTTP_USER_AGENT      "$http_user_agent"
 
-#define wAF_MZ_HTTP_COOKIE          "$http_cookie"
+#define WAF_MZ_HTTP_COOKIE          "$http_cookie"
 #define WAF_MZ_REQUEST_HEADERS      "$request_headers"
 
 /* html decode */
@@ -76,6 +76,7 @@ typedef struct {
     http_method_e method;
     str_t uri;
     str_t args;
+    str_t cookies;
     str_t request_body;
 
     list_head_t headers_head;
@@ -325,6 +326,16 @@ static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
         }
     }
 
+    /* match cookies */
+    if (data->cookies.data && data->cookies.len > 0) {
+        mz.data = WAF_MZ_HTTP_COOKIE;
+        mz.len = strlen(WAF_MZ_HTTP_COOKIE);
+        rc = waf_match_ori(&data->cookies, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
     /* request body */
     if (data->request_body.data && data->request_body.len > 0) {
         mz.data = WAF_MZ_REQUEST_BODY;
@@ -425,6 +436,16 @@ static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
         }
     }
 
+    /* cookies */
+    if (data->cookies.data && data->cookies.len > 0) {
+        mz.data = wAF_MZ_U_HTTP_COOKIE;
+        mz.len = strlen(wAF_MZ_U_HTTP_COOKIE);
+        rc = waf_match_unescapted(&data->cookies, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
     /* body */
     if (data->request_body.data && data->request_body.len > 0) {
         mz.data = WAF_MZ_U_REQUEST_BODY;
@@ -477,6 +498,7 @@ void * waf_data_create(
         http_method_e method, 
         unsigned char  *uri, size_t uri_len,
         unsigned char *args, size_t args_len,
+        unsigned char *cookies, size_t cookies_len,
         unsigned char *request_body, size_t req_len)
 {
     waf_data_t *data;
@@ -496,6 +518,9 @@ void * waf_data_create(
 
     data->args.data = args;
     data->args.len = args_len;
+
+    data->cookies.data = cookies;
+    data->cookies.len = cookies_len;
 
     data->request_body.data = request_body;
     data->request_body.len = req_len;
@@ -579,6 +604,7 @@ void waf_data_show(void *waf_data)
     log_info("method:%d", data->method);
     log_info("uri:%.*s", data->uri.len, data->uri.data);
     log_info("args:%.*s", data->args.len, data->args.data);
+    log_info("cookies:%.*s", data->cookies.len, data->cookies.data);
     log_info("request_body:%.*s", data->request_body.len, data->request_body.data);
 
     log_info("\nHeaders:");

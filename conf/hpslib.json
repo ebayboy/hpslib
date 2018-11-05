@@ -16,6 +16,11 @@
                 "id": "10021",
                 "mz": "$u_user_agent",
                 "rx": "22 33"
+            },
+            {   
+                "id": "10022",
+                "mz": "$u_http_cookie",
+                "rx": "a= f b"
             }
         ]
     }
