@@ -5,290 +5,3606 @@
 
     "SecRule": 
     {
+        "Rules": 
+        [
+            {   
+                "id": "10020",
+                "mz": "$uri,$user_agent",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            },
+            {
+                "id": "1",
+                "mz": "$u_uri_1",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
 
-"Rules": [{
-			"id": "10003",
-			"mz": "$u_uri,$uri",
-			"rx": "\\\\.php(3|4|5)?\\\\.[^/]+?$"
-		}, {
-			"id": "10074",
-			"mz": "$u_post_key,$U_REQUEST_HEADERS,$u_uri,$uri,$u_post_value",
-			"rx": "(`|\\\\s+&+\\\\s+)['\\\\\\\"\\\\s]*(/usr/)?(local|share)?(/bin/)?\\\\b(net\\\\s*user|nmap\\\\b|netcat\\\\b|telenet\\\\b|(echo|nc|ps|cat|netstat|ping)\\\\s+|dir\\\\b|pwd\\\\b|id\\\\b|set\\\\b|ifconfig\\\\b|ipconfig\\\\b|whoami\\\\b|uname\\\\b|reboot\\\\b|shutdown\\\\s+|telinit|group(add|del|mod)|user(add|del|mod))(\\\\.exe)?['\\\\\\\"]*[`]?"
-		}, {
-			"id": "10022",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "\\\\b(?:php|file)://[^&]*\\\\b(?:etc/|usr/|root/|proc/|var/|boot\\\\.ini)"
-		}, {
-			"id": "10036",
-			"mz": "$u_uri,$u_get_key,$u_post_key,$u_http_referer,$http_referer,$u_http_user_agent,$u_get_value,$uri,$u_post_value,$U_REQUEST_HEADERS,$http_user_agent",
-			"rx": "sleep\\\\((\\\\s*?)(\\\\d*?)(\\\\s*?)\\\\)|benchmark\\\\((.*?)\\\\,(.*?)\\\\)|WAITFOR DELAY"
-		}, {
-			"id": "10070",
-			"mz": "$u_http_user_agent,$http_user_agent",
-			"rx": "\\\\(\\\\)\\\\.{\\\\.:;\\\\.};"
-		}, {
-			"id": "10072",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$U_REQUEST_HEADERS",
-			"rx": "<[a-zA-Z]+(?:/|\\\\s*)[^>&]*\\\\b(src|code|action|data|href)\\\\b[^&>]*=[^&]+"
-		}, {
-			"id": "10087",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "[^&]*?\\b(and|or)\\b[^&]*?[\\\\\\'\\\\\\\" ]{2,}[^&]*?"
-		}, {
-			"id": "10092",
-			"mz": "$uri,$u_post_value,$u_post_key,$u_args_value,$u_args_key,$u_uri,$u_get_value,$u_get_key",
-			"rx": "document\\.cookie|document\\.write|\\.parentnode|\\.innerhtml|window\\.location"
-		}, {
-			"id": "10008",
-			"mz": "$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "<xml(?:/| )[^&>]*src=[^&>]+.xml[^&]+html[^&]+>"
-		}, {
-			"id": "10020",
-			"mz": "$u_post_key,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value",
-			"rx": "/etc/(./)?(passwd|shadow|rc|boot)"
-		}, {
-			"id": "10055",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$U_REQUEST_HEADERS",
-			"rx": "([\\\\'\\\\/\\\\\\\"\\\\(\\\\)%`,|+\\\\;\\\\-]{1,5})(\\\\s|\\\\d)?(AND|OR|as|PROCEDURE|rlike|where|case|select|call|begin)\\\\s+[^&]*?(DOMAIN.DOMAINS|SYSMASTER|SYSIBM|RDB\\\\$|sysusers|ALL_USERS|DBMS_PIPE\\\\.RECEIVE_MESSAGE|REGEXP_SUBSTRING|Elt|GENERATE_SERIES|BENCHMARK|sys_context|case|cast|sleep|INFORMATION_SCHEMA|end|@@(version|user|database))"
-		}, {
-			"id": "10078",
-			"mz": "$u_post_value,$u_post_key,$u_uri,$uri",
-			"rx": "([\\\\'\\\\/\\\\\\\"\\\\(\\\\)%`,|+\\\\;]{1,5})\\\\s?(AND|OR|as|PROCEDURE|rlike|where|case|select|call|begin)\\\\s+[^&]*?(DOMAIN.DOMAINS|SYSMASTER|SYSIBM|RDB\\\\$|sysusers|ALL_USERS|DBMS_PIPE\\\\.RECEIVE_MESSAGE|REGEXP_SUBSTRING|Elt|GENERATE_SERIES|BENCHMARK|sys_context|case|cast|sleep|INFORMATION_SCHEMA|end|@@(version|user|database))"
-		}, {
-			"id": "10102",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "(merge.*?using\\s*?\\()|(execute\\s*?immediate\\s*?[\\\"'`])|(?:match\\s*?[\\w(),+-]+\\s*?against\\s*?\\()"
-		}, {
-			"id": "10027",
-			"mz": "$u_request_body",
-			"rx": "(fmdo\\\\s*?=\\\\s*?rename.+?|activepath\\\\s*?=.+?|oldfilename\\\\s*?=.+?|newfilename\\\\s*?=.+?\\\\.(?:php|php2|php3|php4|php5|phtml|asp|aspx|ascx|jsp|cfm|pl|cgi|cer|asa|htr|cdx|ashx|jspx|htaccess|asmx|jspf)\\\\b.*?){4}"
-		}, {
-			"id": "10046",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "\\\\b(?:admin_(?:spider|silic|b4che10r)pass|ASPXSpy|b374k)\\\\b"
-		}, {
-			"id": "10057",
-			"mz": "$u_uri,$u_get_value,$u_get_key",
-			"rx": "<meta(\\\\s|\\\\+)*[^;]*http-equiv=[^;&]*content=(\\\\\\\"|')[^&\\\\\\\"]*url=[^&\\\\\\\"]*(\\\\\\\"|')"
-		}, {
-			"id": "10066",
-			"mz": "$u_get_key,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$http_referer,$u_http_user_agent,$http_user_agent,$u_uri,$uri,$u_http_referer,$u_get_value",
-			"rx": "[/\\\\*|\\\\!]*union(\\\\*/|/\\\\*|\\\\!)*((\\\\x0b|\\\\xa0)\\\\w*|\\\\d*)select"
-		}, {
-			"id": "10079",
-			"mz": "$u_get_value,$u_get_key,$U_REQUEST_HEADERS,$u_uri",
-			"rx": "\\border\\\\s*?\\bby\\b\\\\s*?\\\\d{1,2}--"
-		}, {
-			"id": "10097",
-			"mz": "$u_post_key,$u_uri,$uri,$u_post_value",
-			"rx": "(/\\*!?|\\*/|[';]--|--[\\s\\r\\n\\v\\f]|(?:--[^-]*?-)|([^\\-&])#.*?[\\s\\r\\n\\v\\f]|;?\\\\x00)"
-		}, {
-			"id": "10101",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "ctxsys.drithsx.sn|utl_inaddr.get_host_name|dbms_xdb_version.checkin|dbms_xdb_version.makeversioned|dbms_xdb_version.uncheckout|dbms_utility.sqlid_to_sqlhash|ordsys.ord_dicom.getmappingxpath"
-		}, {
-			"id": "10005",
-			"mz": "$u_http_user_agent,$http_user_agent",
-			"rx": "HTTrack|-scan|dirbuster|harvest|fimap|zmeu|bbscan|grabber|appscan|awvs|sqlmap|nikto|havij|w3af|hydra|nessus|nmap|bilbo|pangolin|sqlninja|aisec|inf-ssl|tenscan|whatweb|zoomeye|Sucuri|Alibaba\\\\.Security\\\\.Heimdall|api\\\\.scanv\\\\.com|Hydra|WebRavor|netsparker|arachni|xss\\\\.me|www\\\\.checkprivacy\\\\.or\\\\.kr|InetURL|SharinGan|pois0n|BOT/0.1 (BOT for JCE)|\\\\(\\\\)\\\\s\\\\{\\\\s+[^;\\\\}]+;\\\\s*\\\\}\\\\s*;"
-		}, {
-			"id": "10011",
-			"mz": "$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key",
-			"rx": "<(\\\\?XML|soap:).*?<!DOCTYPE[^<>]*?(SYSTEM|PUBLIC).*?>"
-		}, {
-			"id": "10013",
-			"mz": "$u_uri,$uri",
-			"rx": "\\\\.(png|bmp|jpe?g|gif|txt|swf|avi|mpe?g|mp4|mov|flv|rar|zip|html|pdf|rm|avi|xls|doc|mp3|wma)/[^&]+?\\\\.php(3|4|5)?$"
-		}, {
-			"id": "10021",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$u_http_referer,$http_referer,$u_http_user_agent,$http_user_agent",
-			"rx": "data://text/plain;base64,"
-		}, {
-			"id": "10035",
-			"mz": "$u_request_body",
-			"rx": "(fmdo\\\\s*?=\\\\s*?edit.+?|filename\\\\s*?=.+?\\\\.(?:php|php2|php3|php4|php5|phtml|asp|aspx|ascx|jsp|cfm|pl|cgi|cer|asa|htr|cdx|ashx|jspx|htaccess|asmx|jspf)\\\\b.*?){2}"
-		}, {
-			"id": "10103",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "(/\\*!?|\\*/|[';]--|--[\\s\\r\\n\\v\\f]|(?:--[^-]*?-)|([^\\-&])#.*?[\\s\\r\\n\\v\\f]|;?\\\\x00)"
-		}, {
-			"id": "10006",
-			"mz": "$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value",
-			"rx": "<(\\\\?XML|soap:).*?<!DOCTYPE[^<>]*?\\\\[.*?<!ENTITY[^<>]+?(SYSTEM|PUBLIC).+?>.*?\\\\].*?>"
-		}, {
-			"id": "10040",
-			"mz": "$uri,$u_uri",
-			"rx": "\\\\.(mdb|as(?:ax?|cx)|bak|backup|frm|my[di]|log|old|sql)$"
-		}, {
-			"id": "10043",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "string:\\\\{[^}&]*\\\\}"
-		}, {
-			"id": "10049",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "QGluaV9zZXQoImRpc3BsYXlfZXJyb3JzIiwiMCIpO0"
-		}, {
-			"id": "10094",
-			"mz": "$uri,$u_post_value,$u_post_key,$u_args_value,$u_args_key,$u_uri,$u_get_value,$u_get_key",
-			"rx": "(?:<APPLET[\\s/+>])"
-		}, {
-			"id": "10041",
-			"mz": "$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$u_uri",
-			"rx": "\\\\b(?:redirect|action|method|redirectAction):[^&]+(java|xwork2?)\\\\."
-		}, {
-			"id": "10044",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "/(script|iframe|div|style|link)>"
-		}, {
-			"id": "10088",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "[^&]*?[\\\\\\'\\\\\\\"\\\\\\`][^&]*?\\b(select|update|insert|delete)\\b[^&]*?"
-		}, {
-			"id": "10031",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "<[a-zA-Z]+(?:/|\\\\s*)[^&<]+=[^&<]+(?:(?:java|vb)script|data):[^&>]+"
-		}, {
-			"id": "10018",
-			"mz": "$u_post_value,$u_post_key,$u_uri,$u_get_value,$u_get_key,$uri",
-			"rx": "(-d(\\\\s| |\\\\+)*?auto_prepend_file(=|=))|(-d(\\\\s| |\\\\+)*?auto_append_file(=|=))"
-		}, {
-			"id": "10026",
-			"mz": "$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "\\\\bcom\\\\.opensymphony\\\\.xwork2\\\\.dispatcher\\\\.HttpServletRe(?:quest|sponse)|\\\\bxwork\\\\.MethodAccessor\\\\.denyMethodExecution"
-		}, {
-			"id": "10029",
-			"mz": "$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value",
-			"rx": "<(script|iframe|div|style|link|applet)"
-		}, {
-			"id": "10030",
-			"mz": "$u_get_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value",
-			"rx": "<[a-zA-Z]+(?:/|\\\\s*)\\\\W*\\\\b(src|code|action|data|href)\\\\b[^&>]*=[^&]+"
-		}, {
-			"id": "10032",
-			"mz": "$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key",
-			"rx": "exec(ute)?[/\\\\*|\\\\s|\\\\r|\\\\n|\\\\*/]*(master(\\\\.\\\\.|\\\\.sys\\\\.|\\\\.db(a|o)?\\\\.))?((xp_(cmdshell|dirtree|enumgroups|getnetname|fixeddrives|availablemedia|getfiledetails|servicecontrol|fileexist|subdirs|loginconfig|regaddmultistring|regdeletekey|regdeletevalue|regenumkeys|regenumvalues|regread|regremovemultistring|regwrite))|(sp_(msgetversion|MSforeachtable|spaceused|MSforeachtable|makewebtask|add_job|addtask|configure)))"
-		}, {
-			"id": "10033",
-			"mz": "$u_get_key,$uri,$u_post_value,$u_post_key,$u_uri,$u_get_value",
-			"rx": "\\\\.(asp|php|jsp|py|cer|ascx|asa|jspx|jsp|htacces|txt|jpg|jpeg|png|gif|svg|img)\\\\d*\\\\x00"
-		}, {
-			"id": "10042",
-			"mz": "$u_request_body",
-			"rx": "(fmdo\\\\s*?=\\\\s*?move.+?|activepath\\\\s*?=.+?|filename\\\\s*?=.+?|newpath\\\\s*?=.+?\\\\.(?:php|php2|php3|php4|php5|phtml|asp|aspx|ascx|jsp|cfm|pl|cgi|cer|asa|htr|cdx|ashx|jspx|htaccess|asmx|jspf)\\\\b.*?){4}"
-		}, {
-			"id": "10009",
-			"mz": "$u_uri,$uri",
-			"rx": "(shell|phpspy|jspspy|zecmd|wooyun|cmdexec)[\\\\-_]?\\\\d*\\\\.(php|php3|php4|php5|php6|php7|jsp|asp|aspx|asa|cer|cgi)($|/|;|/)"
-		}, {
-			"id": "10014",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS",
-			"rx": "(java\\\\.lang\\\\.ProcessBuilder|java\\\\.lang\\\\.Runtime|java\\\\.lang\\\\.System|class\\\\.classLoader|class\\\\['classLoader'\\\\]|java\\\\.lang\\\\.Shutdown|javax\\\\.script\\\\.ScriptEngineManager|ognl\\\\.OgnlContext|ognl\\\\.MemberAccess|ognl\\\\.ClassResolver|ognl\\\\.TypeConverter|com\\\\.opensymphony\\\\.xwork2\\\\.ActionContext|_memberAccess|java\\\\.io\\\\.File)\\\\b"
-		}, {
-			"id": "10015",
-			"mz": "$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key",
-			"rx": "<[^&]+\\\\bon(unload|error|load|mouse(over|out|move|down)|click|dblclick|drag|grop|scroll|key(press|up|down)|submit|change|select|resize|cut|focus|start)\\\\b\\\\W*?="
-		}, {
-			"id": "10016",
-			"mz": "$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "\\\\bon(unload|error|load|mouse(over|out|move|down)|click|dblclick|drag|grop|scroll|key(press|up|down)|submit|change|select|resize|cut|focus|start)\\\\b\\\\W*?=[^&]+>"
-		}, {
-			"id": "10019",
-			"mz": "$u_get_key,$uri,$u_post_value,$u_post_key,$u_uri,$u_get_value",
-			"rx": "2\\\\.?2\\\\.?2\\\\.?5\\\\.?0\\\\.?7\\\\.?3\\\\.?8\\\\.?5\\\\.?8\\\\.?5\\\\.?0\\\\.?7\\\\.?2\\\\.?0\\\\.?1\\\\.?(1|2)"
-		}, {
-			"id": "10050",
-			"mz": "$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri",
-			"rx": "<%\\\\s+.*(?:eval|execute(global)?)\\\\s+[\\\\w\\\\d]+"
-		}, {
-			"id": "10096",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$u_args_value,$u_args_key",
-			"rx": "[\\s\\\\\\\"\\\\\\'\\\\\\`;\\/0-9\\=\\x0B\\x09\\x0C\\x3B\\x2C\\x28\\x3B]+on[a-zA-Z]+[\\s\\x0B\\x09\\x0C\\x3B\\x2C\\x28\\x3B]*?="
-		}, {
-			"id": "10012",
-			"mz": "$uri,$u_post_value,$u_post_key,$http_referer,$u_http_user_agent,$u_get_value,$u_get_key,$U_REQUEST_HEADERS,$u_http_referer,$http_user_agent,$u_uri",
-			"rx": "[/\\\\*|\\\\!]*union((#\\\\w*)|(/\\\\*[^&]*)|(\\\\s\\\\w*)|\\\\r|\\\\n|(\\\\*/[^&]*)|(\\\\*[^&]*)|((\\\\x0b|\\\\xa0)\\\\w*))*select"
-		}, {
-			"id": "10025",
-			"mz": "$u_get_key,$uri,$u_post_value,$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value",
-			"rx": "((\\\\.\\\\./)|(\\\\.\\\\.\\\\\\\\)|(\\\\.\\\\.\\\\x5c)|(\\\\.\\\\.\\\\x2f))+(?:boot|rc|etc|usr|var|root|web-inf|([^&]+\\\\.(php|php2|php3|php4|php5|phtml|asp|aspx|ascx|jsp|cfm|pl|cgi|cer|asa|htr|cdx|ashx|jspx|htaccess|asmx|jspf)))"
-		}, {
-			"id": "10095",
-			"mz": "$u_get_key,$uri,$u_post_value,$u_post_key,$u_args_value,$u_args_key,$u_uri,$u_get_value",
-			"rx": "(<.*[:]?vmlframe.*?[\\s/+]*?src[\\s/+]*=)"
-		}, {
-			"id": "10099",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "\\bm(?:s(?:ysaccessobjects|ysaces|ysobjects|ysqueries|ysrelationships|ysaccessstorage|ysaccessxml|ysmodules|ysmodules2|db)|aster\\.\\.sysdatabases|ysql\\.db)\\b"
-		}, {
-			"id": "10001",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "php://(input|filter/read=|fd/\\\\d+)"
-		}, {
-			"id": "10004",
-			"mz": "$uri,$u_uri",
-			"rx": "\\\\W(?:[89]0sec1?|[cC]99|[rR]57|phpspy|b374k)\\\\.php\\\\b"
-		}, {
-			"id": "10039",
-			"mz": "$u_uri,$uri",
-			"rx": "\\\\b(db|database|users|password|vhost|bbs|host|web|www|root|site|php|jsp|asp|templates)\\\\b[^/]*?\\\\.(rar|zip|7z|tar|tar\\\\.gz|tgz|tar\\\\.bz|tar\\\\.bz2|tar\\\\.xz|txt)$"
-		}, {
-			"id": "10045",
-			"mz": "$u_post_key,$U_REQUEST_HEADERS,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value",
-			"rx": "<\\\\w+(?:/| )+style[^&>]*=[^\\\\&>]+(\\\\00)\\\\w{2,}"
-		}, {
-			"id": "10056",
-			"mz": "$u_uri,$u_get_value,$u_get_key",
-			"rx": "<[a-zA-Z]+(?:/|\\\\s*)\\\\W*\\\\bsrc\\\\b[^&]*\\\\ballowscriptaccess\\\\b[^&>]+"
-		}, {
-			"id": "10100",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "(?:^(-0000023456|4294967295|4294967296|2147483648|2147483647|0000012345|-2147483648|-2147483649|0000023456|3.0.00738585072007e-308|1e309)$)"
-		}, {
-			"id": "10038",
-			"mz": "$uri,$u_uri",
-			"rx": "/\\\\.svn/|/\\\\.git/|/CVS/(Root|Entries|Repository)|\\\\.build\\\\.sh|\\\\.ht(?:access|passwd|group)|phpinfo|/host-manager/html|servlet/SessionExample|header/app.js"
-		}, {
-			"id": "10080",
-			"mz": "$uri,$u_post_value,$u_post_key,$u_uri",
-			"rx": "\\border\\\\s*?\\bby\\b\\\\s*?\\\\d{1,2}--"
-		}, {
-			"id": "10084",
-			"mz": "$u_args_key,$u_args_value",
-			"rx": "\\bhttps?://((\\\\d){1,3}\\\\.){3}\\\\d{1,3}[a-zA-Z\\\\/]{2,8}\\\\.(txt|php)"
-		}, {
-			"id": "10002",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key",
-			"rx": "\\\\.(?:php|as[pa]x?|cer)[;:].*\\\\.(?:jp[e]?g|bmp|gif|png|txt|tiff|fpx|ai|raw|ufo|exif|fpx|pcx|psd|cdr|pcd|dxf|raw)"
-		}, {
-			"id": "10052",
-			"mz": "$u_args_key,$u_args_value",
-			"rx": "^https?://((\\\\d){1,3}\\\\.){3}\\\\d{1,3}(:\\\\d{2,4})*/[^&]*\\\\.(asp|php|jsp|py|cer|ascx|asa|jspx|jspf|htaccess|txt|zip)"
-		}, {
-			"id": "10073",
-			"mz": "$u_post_key,$u_uri,$uri,$u_post_value",
-			"rx": "<[a-zA-Z]+(?:/|\\\\s*)\\\\W*\\\\b(src|code|action|data|href)\\\\b[^&>]*=[^&]+"
-		}, {
-			"id": "10085",
-			"mz": "$u_uri,$u_get_value,$u_get_key,$u_args_value,$u_args_key",
-			"rx": "((php|win|boot)\\\\.ini|base\\\\.xml|(install|db|data)\\\\.php|passwd)$"
-		}, {
-			"id": "10093",
-			"mz": "$u_args_key,$u_uri,$u_get_value,$u_get_key,$uri,$u_post_value,$u_post_key,$u_args_value",
-			"rx": "(?:<EMBED[\\s/+].*?((src)|(type)).*?=)"
-		}, {
-			"id": "10010",
-			"mz": "$u_args_value,$u_args_key",
-			"rx": "(`|\\\\s+&*\\\\s+)['\\\\\\\"\\\\s]*(/usr/)?(local|share)?(/bin/)?\\\\b(net\\\\s*user|nmap\\\\b|netcat\\\\b|telenet\\\\b|(echo|nc|ps|cat|netstat|ping)\\\\s+|dir\\\\b|pwd\\\\b|id\\\\b|set\\\\b|ifconfig\\\\b|ipconfig\\\\b|whoami\\\\b|uname\\\\b|reboot\\\\b|shutdown\\\\s+|telinit|group(add|del|mod)|user(add|del|mod))(\\\\.exe)?['\\\\\\\"]*[`]?"
-		}, {
-			"id": "10091",
-			"mz": "$uri,$u_post_value,$u_post_key,$u_args_value,$u_args_key,$u_uri,$u_get_value,$u_get_key",
-			"rx": "(?i:<OBJECT[\\s/+].*?((type)|(codetype)|(classid)|(code)|(data))[\\s/+]*=)"
-		}, {
-			"id": "10098",
-			"mz": "$u_uri,$uri,$u_post_value,$u_post_key",
-			"rx": "(\\bgeometrycollection\\b|\\bmultipoint\\b|\\bpolygon\\b|\\bmultipolygon\\b|\\blinestring\\b|\\bmultilinestring\\b|\\bname_const\\b)\\("
-		}]
+            {
+                "id": "2",
+                "mz": "$u_uri_2",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
 
+            {
+                "id": "3",
+                "mz": "$u_uri_3",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
 
+            {
+                "id": "4",
+                "mz": "$u_uri_4",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
 
+            {
+                "id": "5",
+                "mz": "$u_uri_5",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "6",
+                "mz": "$u_uri_6",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "7",
+                "mz": "$u_uri_7",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "8",
+                "mz": "$u_uri_8",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "9",
+                "mz": "$u_uri_9",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "10",
+                "mz": "$u_uri_10",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "11",
+                "mz": "$u_uri_11",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "12",
+                "mz": "$u_uri_12",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "13",
+                "mz": "$u_uri_13",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "14",
+                "mz": "$u_uri_14",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "15",
+                "mz": "$u_uri_15",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "16",
+                "mz": "$u_uri_16",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "17",
+                "mz": "$u_uri_17",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "18",
+                "mz": "$u_uri_18",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "19",
+                "mz": "$u_uri_19",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "20",
+                "mz": "$u_uri_20",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "21",
+                "mz": "$u_uri_21",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "22",
+                "mz": "$u_uri_22",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "23",
+                "mz": "$u_uri_23",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "24",
+                "mz": "$u_uri_24",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "25",
+                "mz": "$u_uri_25",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "26",
+                "mz": "$u_uri_26",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "27",
+                "mz": "$u_uri_27",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "28",
+                "mz": "$u_uri_28",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "29",
+                "mz": "$u_uri_29",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "30",
+                "mz": "$u_uri_30",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "31",
+                "mz": "$u_uri_31",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "32",
+                "mz": "$u_uri_32",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "33",
+                "mz": "$u_uri_33",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "34",
+                "mz": "$u_uri_34",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "35",
+                "mz": "$u_uri_35",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "36",
+                "mz": "$u_uri_36",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "37",
+                "mz": "$u_uri_37",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "38",
+                "mz": "$u_uri_38",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "39",
+                "mz": "$u_uri_39",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "40",
+                "mz": "$u_uri_40",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "41",
+                "mz": "$u_uri_41",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "42",
+                "mz": "$u_uri_42",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "43",
+                "mz": "$u_uri_43",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "44",
+                "mz": "$u_uri_44",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "45",
+                "mz": "$u_uri_45",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "46",
+                "mz": "$u_uri_46",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "47",
+                "mz": "$u_uri_47",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "48",
+                "mz": "$u_uri_48",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "49",
+                "mz": "$u_uri_49",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "50",
+                "mz": "$u_uri_50",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "51",
+                "mz": "$u_uri_51",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "52",
+                "mz": "$u_uri_52",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "53",
+                "mz": "$u_uri_53",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "54",
+                "mz": "$u_uri_54",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "55",
+                "mz": "$u_uri_55",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "56",
+                "mz": "$u_uri_56",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "57",
+                "mz": "$u_uri_57",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "58",
+                "mz": "$u_uri_58",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "59",
+                "mz": "$u_uri_59",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "60",
+                "mz": "$u_uri_60",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "61",
+                "mz": "$u_uri_61",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "62",
+                "mz": "$u_uri_62",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "63",
+                "mz": "$u_uri_63",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "64",
+                "mz": "$u_uri_64",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "65",
+                "mz": "$u_uri_65",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "66",
+                "mz": "$u_uri_66",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "67",
+                "mz": "$u_uri_67",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "68",
+                "mz": "$u_uri_68",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "69",
+                "mz": "$u_uri_69",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "70",
+                "mz": "$u_uri_70",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "71",
+                "mz": "$u_uri_71",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "72",
+                "mz": "$u_uri_72",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "73",
+                "mz": "$u_uri_73",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "74",
+                "mz": "$u_uri_74",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "75",
+                "mz": "$u_uri_75",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "76",
+                "mz": "$u_uri_76",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "77",
+                "mz": "$u_uri_77",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "78",
+                "mz": "$u_uri_78",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "79",
+                "mz": "$u_uri_79",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "80",
+                "mz": "$u_uri_80",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "81",
+                "mz": "$u_uri_81",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "82",
+                "mz": "$u_uri_82",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "83",
+                "mz": "$u_uri_83",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "84",
+                "mz": "$u_uri_84",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "85",
+                "mz": "$u_uri_85",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "86",
+                "mz": "$u_uri_86",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "87",
+                "mz": "$u_uri_87",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "88",
+                "mz": "$u_uri_88",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "89",
+                "mz": "$u_uri_89",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "90",
+                "mz": "$u_uri_90",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "91",
+                "mz": "$u_uri_91",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "92",
+                "mz": "$u_uri_92",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "93",
+                "mz": "$u_uri_93",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "94",
+                "mz": "$u_uri_94",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "95",
+                "mz": "$u_uri_95",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "96",
+                "mz": "$u_uri_96",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "97",
+                "mz": "$u_uri_97",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "98",
+                "mz": "$u_uri_98",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "99",
+                "mz": "$u_uri_99",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "100",
+                "mz": "$u_uri_100",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "101",
+                "mz": "$u_uri_101",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "102",
+                "mz": "$u_uri_102",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "103",
+                "mz": "$u_uri_103",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "104",
+                "mz": "$u_uri_104",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "105",
+                "mz": "$u_uri_105",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "106",
+                "mz": "$u_uri_106",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "107",
+                "mz": "$u_uri_107",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "108",
+                "mz": "$u_uri_108",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "109",
+                "mz": "$u_uri_109",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "110",
+                "mz": "$u_uri_110",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "111",
+                "mz": "$u_uri_111",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "112",
+                "mz": "$u_uri_112",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "113",
+                "mz": "$u_uri_113",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "114",
+                "mz": "$u_uri_114",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "115",
+                "mz": "$u_uri_115",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "116",
+                "mz": "$u_uri_116",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "117",
+                "mz": "$u_uri_117",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "118",
+                "mz": "$u_uri_118",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "119",
+                "mz": "$u_uri_119",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "120",
+                "mz": "$u_uri_120",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "121",
+                "mz": "$u_uri_121",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "122",
+                "mz": "$u_uri_122",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "123",
+                "mz": "$u_uri_123",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "124",
+                "mz": "$u_uri_124",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "125",
+                "mz": "$u_uri_125",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "126",
+                "mz": "$u_uri_126",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "127",
+                "mz": "$u_uri_127",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "128",
+                "mz": "$u_uri_128",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "129",
+                "mz": "$u_uri_129",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "130",
+                "mz": "$u_uri_130",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "131",
+                "mz": "$u_uri_131",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "132",
+                "mz": "$u_uri_132",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "133",
+                "mz": "$u_uri_133",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "134",
+                "mz": "$u_uri_134",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "135",
+                "mz": "$u_uri_135",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "136",
+                "mz": "$u_uri_136",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "137",
+                "mz": "$u_uri_137",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "138",
+                "mz": "$u_uri_138",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "139",
+                "mz": "$u_uri_139",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "140",
+                "mz": "$u_uri_140",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "141",
+                "mz": "$u_uri_141",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "142",
+                "mz": "$u_uri_142",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "143",
+                "mz": "$u_uri_143",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "144",
+                "mz": "$u_uri_144",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "145",
+                "mz": "$u_uri_145",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "146",
+                "mz": "$u_uri_146",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "147",
+                "mz": "$u_uri_147",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "148",
+                "mz": "$u_uri_148",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "149",
+                "mz": "$u_uri_149",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "150",
+                "mz": "$u_uri_150",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "151",
+                "mz": "$u_uri_151",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "152",
+                "mz": "$u_uri_152",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "153",
+                "mz": "$u_uri_153",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "154",
+                "mz": "$u_uri_154",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "155",
+                "mz": "$u_uri_155",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "156",
+                "mz": "$u_uri_156",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "157",
+                "mz": "$u_uri_157",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "158",
+                "mz": "$u_uri_158",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "159",
+                "mz": "$u_uri_159",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "160",
+                "mz": "$u_uri_160",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "161",
+                "mz": "$u_uri_161",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "162",
+                "mz": "$u_uri_162",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "163",
+                "mz": "$u_uri_163",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "164",
+                "mz": "$u_uri_164",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "165",
+                "mz": "$u_uri_165",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "166",
+                "mz": "$u_uri_166",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "167",
+                "mz": "$u_uri_167",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "168",
+                "mz": "$u_uri_168",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "169",
+                "mz": "$u_uri_169",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "170",
+                "mz": "$u_uri_170",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "171",
+                "mz": "$u_uri_171",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "172",
+                "mz": "$u_uri_172",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "173",
+                "mz": "$u_uri_173",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "174",
+                "mz": "$u_uri_174",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "175",
+                "mz": "$u_uri_175",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "176",
+                "mz": "$u_uri_176",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "177",
+                "mz": "$u_uri_177",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "178",
+                "mz": "$u_uri_178",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "179",
+                "mz": "$u_uri_179",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "180",
+                "mz": "$u_uri_180",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "181",
+                "mz": "$u_uri_181",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "182",
+                "mz": "$u_uri_182",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "183",
+                "mz": "$u_uri_183",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "184",
+                "mz": "$u_uri_184",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "185",
+                "mz": "$u_uri_185",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "186",
+                "mz": "$u_uri_186",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "187",
+                "mz": "$u_uri_187",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "188",
+                "mz": "$u_uri_188",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "189",
+                "mz": "$u_uri_189",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "190",
+                "mz": "$u_uri_190",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "191",
+                "mz": "$u_uri_191",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "192",
+                "mz": "$u_uri_192",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "193",
+                "mz": "$u_uri_193",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "194",
+                "mz": "$u_uri_194",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "195",
+                "mz": "$u_uri_195",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "196",
+                "mz": "$u_uri_196",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "197",
+                "mz": "$u_uri_197",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "198",
+                "mz": "$u_uri_198",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "199",
+                "mz": "$u_uri_199",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "200",
+                "mz": "$u_uri_200",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "201",
+                "mz": "$u_uri_201",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "202",
+                "mz": "$u_uri_202",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "203",
+                "mz": "$u_uri_203",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "204",
+                "mz": "$u_uri_204",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "205",
+                "mz": "$u_uri_205",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "206",
+                "mz": "$u_uri_206",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "207",
+                "mz": "$u_uri_207",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "208",
+                "mz": "$u_uri_208",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "209",
+                "mz": "$u_uri_209",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "210",
+                "mz": "$u_uri_210",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "211",
+                "mz": "$u_uri_211",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "212",
+                "mz": "$u_uri_212",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "213",
+                "mz": "$u_uri_213",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "214",
+                "mz": "$u_uri_214",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "215",
+                "mz": "$u_uri_215",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "216",
+                "mz": "$u_uri_216",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "217",
+                "mz": "$u_uri_217",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "218",
+                "mz": "$u_uri_218",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "219",
+                "mz": "$u_uri_219",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "220",
+                "mz": "$u_uri_220",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "221",
+                "mz": "$u_uri_221",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "222",
+                "mz": "$u_uri_222",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "223",
+                "mz": "$u_uri_223",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "224",
+                "mz": "$u_uri_224",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "225",
+                "mz": "$u_uri_225",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "226",
+                "mz": "$u_uri_226",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "227",
+                "mz": "$u_uri_227",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "228",
+                "mz": "$u_uri_228",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "229",
+                "mz": "$u_uri_229",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "230",
+                "mz": "$u_uri_230",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "231",
+                "mz": "$u_uri_231",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "232",
+                "mz": "$u_uri_232",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "233",
+                "mz": "$u_uri_233",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "234",
+                "mz": "$u_uri_234",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "235",
+                "mz": "$u_uri_235",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "236",
+                "mz": "$u_uri_236",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "237",
+                "mz": "$u_uri_237",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "238",
+                "mz": "$u_uri_238",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "239",
+                "mz": "$u_uri_239",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "240",
+                "mz": "$u_uri_240",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "241",
+                "mz": "$u_uri_241",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "242",
+                "mz": "$u_uri_242",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "243",
+                "mz": "$u_uri_243",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "244",
+                "mz": "$u_uri_244",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "245",
+                "mz": "$u_uri_245",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "246",
+                "mz": "$u_uri_246",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "247",
+                "mz": "$u_uri_247",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "248",
+                "mz": "$u_uri_248",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "249",
+                "mz": "$u_uri_249",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "250",
+                "mz": "$u_uri_250",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "251",
+                "mz": "$u_uri_251",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "252",
+                "mz": "$u_uri_252",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "253",
+                "mz": "$u_uri_253",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "254",
+                "mz": "$u_uri_254",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "255",
+                "mz": "$u_uri_255",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "256",
+                "mz": "$u_uri_256",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "257",
+                "mz": "$u_uri_257",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "258",
+                "mz": "$u_uri_258",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "259",
+                "mz": "$u_uri_259",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "260",
+                "mz": "$u_uri_260",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "261",
+                "mz": "$u_uri_261",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "262",
+                "mz": "$u_uri_262",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "263",
+                "mz": "$u_uri_263",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "264",
+                "mz": "$u_uri_264",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "265",
+                "mz": "$u_uri_265",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "266",
+                "mz": "$u_uri_266",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "267",
+                "mz": "$u_uri_267",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "268",
+                "mz": "$u_uri_268",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "269",
+                "mz": "$u_uri_269",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "270",
+                "mz": "$u_uri_270",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "271",
+                "mz": "$u_uri_271",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "272",
+                "mz": "$u_uri_272",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "273",
+                "mz": "$u_uri_273",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "274",
+                "mz": "$u_uri_274",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "275",
+                "mz": "$u_uri_275",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "276",
+                "mz": "$u_uri_276",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "277",
+                "mz": "$u_uri_277",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "278",
+                "mz": "$u_uri_278",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "279",
+                "mz": "$u_uri_279",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "280",
+                "mz": "$u_uri_280",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "281",
+                "mz": "$u_uri_281",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "282",
+                "mz": "$u_uri_282",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "283",
+                "mz": "$u_uri_283",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "284",
+                "mz": "$u_uri_284",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "285",
+                "mz": "$u_uri_285",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "286",
+                "mz": "$u_uri_286",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "287",
+                "mz": "$u_uri_287",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "288",
+                "mz": "$u_uri_288",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "289",
+                "mz": "$u_uri_289",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "290",
+                "mz": "$u_uri_290",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "291",
+                "mz": "$u_uri_291",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "292",
+                "mz": "$u_uri_292",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "293",
+                "mz": "$u_uri_293",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "294",
+                "mz": "$u_uri_294",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "295",
+                "mz": "$u_uri_295",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "296",
+                "mz": "$u_uri_296",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "297",
+                "mz": "$u_uri_297",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "298",
+                "mz": "$u_uri_298",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "299",
+                "mz": "$u_uri_299",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "300",
+                "mz": "$u_uri_300",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "301",
+                "mz": "$u_uri_301",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "302",
+                "mz": "$u_uri_302",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "303",
+                "mz": "$u_uri_303",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "304",
+                "mz": "$u_uri_304",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "305",
+                "mz": "$u_uri_305",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "306",
+                "mz": "$u_uri_306",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "307",
+                "mz": "$u_uri_307",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "308",
+                "mz": "$u_uri_308",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "309",
+                "mz": "$u_uri_309",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "310",
+                "mz": "$u_uri_310",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "311",
+                "mz": "$u_uri_311",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "312",
+                "mz": "$u_uri_312",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "313",
+                "mz": "$u_uri_313",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "314",
+                "mz": "$u_uri_314",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "315",
+                "mz": "$u_uri_315",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "316",
+                "mz": "$u_uri_316",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "317",
+                "mz": "$u_uri_317",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "318",
+                "mz": "$u_uri_318",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "319",
+                "mz": "$u_uri_319",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "320",
+                "mz": "$u_uri_320",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "321",
+                "mz": "$u_uri_321",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "322",
+                "mz": "$u_uri_322",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "323",
+                "mz": "$u_uri_323",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "324",
+                "mz": "$u_uri_324",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "325",
+                "mz": "$u_uri_325",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "326",
+                "mz": "$u_uri_326",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "327",
+                "mz": "$u_uri_327",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "328",
+                "mz": "$u_uri_328",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "329",
+                "mz": "$u_uri_329",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "330",
+                "mz": "$u_uri_330",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "331",
+                "mz": "$u_uri_331",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "332",
+                "mz": "$u_uri_332",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "333",
+                "mz": "$u_uri_333",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "334",
+                "mz": "$u_uri_334",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "335",
+                "mz": "$u_uri_335",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "336",
+                "mz": "$u_uri_336",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "337",
+                "mz": "$u_uri_337",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "338",
+                "mz": "$u_uri_338",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "339",
+                "mz": "$u_uri_339",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "340",
+                "mz": "$u_uri_340",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "341",
+                "mz": "$u_uri_341",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "342",
+                "mz": "$u_uri_342",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "343",
+                "mz": "$u_uri_343",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "344",
+                "mz": "$u_uri_344",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "345",
+                "mz": "$u_uri_345",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "346",
+                "mz": "$u_uri_346",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "347",
+                "mz": "$u_uri_347",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "348",
+                "mz": "$u_uri_348",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "349",
+                "mz": "$u_uri_349",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "350",
+                "mz": "$u_uri_350",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "351",
+                "mz": "$u_uri_351",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "352",
+                "mz": "$u_uri_352",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "353",
+                "mz": "$u_uri_353",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "354",
+                "mz": "$u_uri_354",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "355",
+                "mz": "$u_uri_355",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "356",
+                "mz": "$u_uri_356",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "357",
+                "mz": "$u_uri_357",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "358",
+                "mz": "$u_uri_358",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "359",
+                "mz": "$u_uri_359",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "360",
+                "mz": "$u_uri_360",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "361",
+                "mz": "$u_uri_361",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "362",
+                "mz": "$u_uri_362",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "363",
+                "mz": "$u_uri_363",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "364",
+                "mz": "$u_uri_364",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "365",
+                "mz": "$u_uri_365",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "366",
+                "mz": "$u_uri_366",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "367",
+                "mz": "$u_uri_367",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "368",
+                "mz": "$u_uri_368",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "369",
+                "mz": "$u_uri_369",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "370",
+                "mz": "$u_uri_370",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "371",
+                "mz": "$u_uri_371",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "372",
+                "mz": "$u_uri_372",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "373",
+                "mz": "$u_uri_373",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "374",
+                "mz": "$u_uri_374",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "375",
+                "mz": "$u_uri_375",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "376",
+                "mz": "$u_uri_376",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "377",
+                "mz": "$u_uri_377",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "378",
+                "mz": "$u_uri_378",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "379",
+                "mz": "$u_uri_379",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "380",
+                "mz": "$u_uri_380",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "381",
+                "mz": "$u_uri_381",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "382",
+                "mz": "$u_uri_382",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "383",
+                "mz": "$u_uri_383",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "384",
+                "mz": "$u_uri_384",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "385",
+                "mz": "$u_uri_385",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "386",
+                "mz": "$u_uri_386",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "387",
+                "mz": "$u_uri_387",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "388",
+                "mz": "$u_uri_388",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "389",
+                "mz": "$u_uri_389",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "390",
+                "mz": "$u_uri_390",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "391",
+                "mz": "$u_uri_391",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "392",
+                "mz": "$u_uri_392",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "393",
+                "mz": "$u_uri_393",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "394",
+                "mz": "$u_uri_394",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "395",
+                "mz": "$u_uri_395",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "396",
+                "mz": "$u_uri_396",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "397",
+                "mz": "$u_uri_397",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "398",
+                "mz": "$u_uri_398",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "399",
+                "mz": "$u_uri_399",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "400",
+                "mz": "$u_uri_400",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "401",
+                "mz": "$u_uri_401",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "402",
+                "mz": "$u_uri_402",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "403",
+                "mz": "$u_uri_403",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "404",
+                "mz": "$u_uri_404",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "405",
+                "mz": "$u_uri_405",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "406",
+                "mz": "$u_uri_406",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "407",
+                "mz": "$u_uri_407",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "408",
+                "mz": "$u_uri_408",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "409",
+                "mz": "$u_uri_409",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "410",
+                "mz": "$u_uri_410",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "411",
+                "mz": "$u_uri_411",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "412",
+                "mz": "$u_uri_412",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "413",
+                "mz": "$u_uri_413",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "414",
+                "mz": "$u_uri_414",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "415",
+                "mz": "$u_uri_415",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "416",
+                "mz": "$u_uri_416",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "417",
+                "mz": "$u_uri_417",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "418",
+                "mz": "$u_uri_418",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "419",
+                "mz": "$u_uri_419",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "420",
+                "mz": "$u_uri_420",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "421",
+                "mz": "$u_uri_421",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "422",
+                "mz": "$u_uri_422",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "423",
+                "mz": "$u_uri_423",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "424",
+                "mz": "$u_uri_424",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "425",
+                "mz": "$u_uri_425",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "426",
+                "mz": "$u_uri_426",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "427",
+                "mz": "$u_uri_427",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "428",
+                "mz": "$u_uri_428",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "429",
+                "mz": "$u_uri_429",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "430",
+                "mz": "$u_uri_430",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "431",
+                "mz": "$u_uri_431",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "432",
+                "mz": "$u_uri_432",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "433",
+                "mz": "$u_uri_433",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "434",
+                "mz": "$u_uri_434",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "435",
+                "mz": "$u_uri_435",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "436",
+                "mz": "$u_uri_436",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "437",
+                "mz": "$u_uri_437",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "438",
+                "mz": "$u_uri_438",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "439",
+                "mz": "$u_uri_439",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "440",
+                "mz": "$u_uri_440",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "441",
+                "mz": "$u_uri_441",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "442",
+                "mz": "$u_uri_442",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "443",
+                "mz": "$u_uri_443",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "444",
+                "mz": "$u_uri_444",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "445",
+                "mz": "$u_uri_445",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "446",
+                "mz": "$u_uri_446",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "447",
+                "mz": "$u_uri_447",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "448",
+                "mz": "$u_uri_448",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "449",
+                "mz": "$u_uri_449",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "450",
+                "mz": "$u_uri_450",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "451",
+                "mz": "$u_uri_451",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "452",
+                "mz": "$u_uri_452",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "453",
+                "mz": "$u_uri_453",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "454",
+                "mz": "$u_uri_454",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "455",
+                "mz": "$u_uri_455",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "456",
+                "mz": "$u_uri_456",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "457",
+                "mz": "$u_uri_457",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "458",
+                "mz": "$u_uri_458",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "459",
+                "mz": "$u_uri_459",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "460",
+                "mz": "$u_uri_460",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "461",
+                "mz": "$u_uri_461",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "462",
+                "mz": "$u_uri_462",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "463",
+                "mz": "$u_uri_463",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "464",
+                "mz": "$u_uri_464",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "465",
+                "mz": "$u_uri_465",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "466",
+                "mz": "$u_uri_466",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "467",
+                "mz": "$u_uri_467",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "468",
+                "mz": "$u_uri_468",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "469",
+                "mz": "$u_uri_469",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "470",
+                "mz": "$u_uri_470",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "471",
+                "mz": "$u_uri_471",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "472",
+                "mz": "$u_uri_472",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "473",
+                "mz": "$u_uri_473",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "474",
+                "mz": "$u_uri_474",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "475",
+                "mz": "$u_uri_475",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "476",
+                "mz": "$u_uri_476",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "477",
+                "mz": "$u_uri_477",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "478",
+                "mz": "$u_uri_478",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "479",
+                "mz": "$u_uri_479",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "480",
+                "mz": "$u_uri_480",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "481",
+                "mz": "$u_uri_481",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "482",
+                "mz": "$u_uri_482",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "483",
+                "mz": "$u_uri_483",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "484",
+                "mz": "$u_uri_484",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "485",
+                "mz": "$u_uri_485",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "486",
+                "mz": "$u_uri_486",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "487",
+                "mz": "$u_uri_487",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "488",
+                "mz": "$u_uri_488",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "489",
+                "mz": "$u_uri_489",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "490",
+                "mz": "$u_uri_490",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "491",
+                "mz": "$u_uri_491",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "492",
+                "mz": "$u_uri_492",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "493",
+                "mz": "$u_uri_493",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "494",
+                "mz": "$u_uri_494",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "495",
+                "mz": "$u_uri_495",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "496",
+                "mz": "$u_uri_496",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "497",
+                "mz": "$u_uri_497",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "498",
+                "mz": "$u_uri_498",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "499",
+                "mz": "$u_uri_499",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "500",
+                "mz": "$u_uri_500",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "501",
+                "mz": "$u_uri_501",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "502",
+                "mz": "$u_uri_502",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "503",
+                "mz": "$u_uri_503",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "504",
+                "mz": "$u_uri_504",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "505",
+                "mz": "$u_uri_505",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "506",
+                "mz": "$u_uri_506",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "507",
+                "mz": "$u_uri_507",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "508",
+                "mz": "$u_uri_508",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "509",
+                "mz": "$u_uri_509",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "510",
+                "mz": "$u_uri_510",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "511",
+                "mz": "$u_uri_511",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "512",
+                "mz": "$u_uri_512",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "513",
+                "mz": "$u_uri_513",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "514",
+                "mz": "$u_uri_514",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "515",
+                "mz": "$u_uri_515",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "516",
+                "mz": "$u_uri_516",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "517",
+                "mz": "$u_uri_517",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "518",
+                "mz": "$u_uri_518",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "519",
+                "mz": "$u_uri_519",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "520",
+                "mz": "$u_uri_520",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "521",
+                "mz": "$u_uri_521",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "522",
+                "mz": "$u_uri_522",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "523",
+                "mz": "$u_uri_523",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "524",
+                "mz": "$u_uri_524",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "525",
+                "mz": "$u_uri_525",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "526",
+                "mz": "$u_uri_526",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "527",
+                "mz": "$u_uri_527",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "528",
+                "mz": "$u_uri_528",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "529",
+                "mz": "$u_uri_529",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "530",
+                "mz": "$u_uri_530",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "531",
+                "mz": "$u_uri_531",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "532",
+                "mz": "$u_uri_532",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "533",
+                "mz": "$u_uri_533",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "534",
+                "mz": "$u_uri_534",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "535",
+                "mz": "$u_uri_535",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "536",
+                "mz": "$u_uri_536",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "537",
+                "mz": "$u_uri_537",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "538",
+                "mz": "$u_uri_538",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "539",
+                "mz": "$u_uri_539",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "540",
+                "mz": "$u_uri_540",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "541",
+                "mz": "$u_uri_541",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "542",
+                "mz": "$u_uri_542",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "543",
+                "mz": "$u_uri_543",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "544",
+                "mz": "$u_uri_544",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "545",
+                "mz": "$u_uri_545",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "546",
+                "mz": "$u_uri_546",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "547",
+                "mz": "$u_uri_547",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "548",
+                "mz": "$u_uri_548",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "549",
+                "mz": "$u_uri_549",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "550",
+                "mz": "$u_uri_550",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "551",
+                "mz": "$u_uri_551",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "552",
+                "mz": "$u_uri_552",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "553",
+                "mz": "$u_uri_553",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "554",
+                "mz": "$u_uri_554",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "555",
+                "mz": "$u_uri_555",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "556",
+                "mz": "$u_uri_556",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "557",
+                "mz": "$u_uri_557",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "558",
+                "mz": "$u_uri_558",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "559",
+                "mz": "$u_uri_559",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "560",
+                "mz": "$u_uri_560",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "561",
+                "mz": "$u_uri_561",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "562",
+                "mz": "$u_uri_562",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "563",
+                "mz": "$u_uri_563",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "564",
+                "mz": "$u_uri_564",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "565",
+                "mz": "$u_uri_565",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "566",
+                "mz": "$u_uri_566",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "567",
+                "mz": "$u_uri_567",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "568",
+                "mz": "$u_uri_568",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "569",
+                "mz": "$u_uri_569",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "570",
+                "mz": "$u_uri_570",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "571",
+                "mz": "$u_uri_571",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "572",
+                "mz": "$u_uri_572",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "573",
+                "mz": "$u_uri_573",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "574",
+                "mz": "$u_uri_574",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "575",
+                "mz": "$u_uri_575",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "576",
+                "mz": "$u_uri_576",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "577",
+                "mz": "$u_uri_577",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "578",
+                "mz": "$u_uri_578",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "579",
+                "mz": "$u_uri_579",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "580",
+                "mz": "$u_uri_580",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "581",
+                "mz": "$u_uri_581",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "582",
+                "mz": "$u_uri_582",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "583",
+                "mz": "$u_uri_583",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "584",
+                "mz": "$u_uri_584",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "585",
+                "mz": "$u_uri_585",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "586",
+                "mz": "$u_uri_586",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "587",
+                "mz": "$u_uri_587",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "588",
+                "mz": "$u_uri_588",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "589",
+                "mz": "$u_uri_589",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "590",
+                "mz": "$u_uri_590",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "591",
+                "mz": "$u_uri_591",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "592",
+                "mz": "$u_uri_592",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "593",
+                "mz": "$u_uri_593",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "594",
+                "mz": "$u_uri_594",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "595",
+                "mz": "$u_uri_595",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "596",
+                "mz": "$u_uri_596",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "597",
+                "mz": "$u_uri_597",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "598",
+                "mz": "$u_uri_598",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }, 
+
+            {
+                "id": "599",
+                "mz": "$u_uri_599",
+                "rx": "/etc/(passwd|shadow|rc|boot)"
+            }
+        ]
     }
 }
