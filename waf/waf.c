@@ -144,7 +144,9 @@ int waf_init(const char *logfile, const char *waf_config_name)
         goto error;
     }
     
-    waf_match_init(&waf->waf_match, &waf->waf_config);
+    if (waf_match_init(&waf->waf_match, &waf->waf_config) == -1) {
+        goto error;
+    }
 
     return 0;
 
@@ -499,7 +501,7 @@ int waf_data_add_param(void *waf_data,
 {
     waf_param_t *node = NULL;
     waf_data_t *data = waf_data;
-    unsigned char mz_hash_str[WAF_MZ_MAX] = {0};
+    unsigned char mz_hash_str[WAF_RULE_MZ_LEN] = {0};
 
     if (data == NULL || key_data == NULL || key_len ==0
             || value_data == NULL || value_len == 0) {

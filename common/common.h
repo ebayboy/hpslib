@@ -5,7 +5,7 @@
 
 #define WAF_RULES_MAX       4096
 #define WAF_ID_LEN          128
-#define WAF_MZ_MAX          128
+#define WAF_MZ_MAX          4096
 
 #define WAF_RULE_ID_LEN     128
 #define WAF_RULE_MZ_LEN     128

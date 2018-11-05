@@ -65,11 +65,18 @@ static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_confi
                 log_error("ptrim mz=[%s]", ptrim);
                 return -1;
             }
-            log_info("token:[%s] ptrim:[%s]", token, ptrim);
+            log_info("token:[%s] ptrim:[%s] waf_matcher->cursor:[%d]", 
+                    token, ptrim, waf_matcher->matcher_cursor);
+
 
             /*check matcher */
             matcher = find_matcher(waf_matcher, ptrim);
             if (matcher == NULL) {
+                if (waf_matcher->matcher_cursor + 1 >= WAF_MZ_MAX) {
+                    log_error("too many match zones, max is [%d]", WAF_MZ_MAX);
+                    return -1;
+                }
+
                 if ((matcher = match_new()) == NULL) {
                     return -1;
                 }
