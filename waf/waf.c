@@ -299,6 +299,7 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
     return rc;
 }
 
+/* match uri args body */
 static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -404,6 +405,7 @@ static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
     int rc = 0;
     str_t mz;
 
+    /* uri */
     if (data->uri.data && data->uri.len > 0) {
         mz.data = WAF_MZ_U_URI;
         mz.len = strlen(WAF_MZ_U_URI);
@@ -413,6 +415,7 @@ static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
         }
     }
 
+    /* args */
     if (data->args.data && data->args.len > 0) {
         mz.data = WAF_MZ_U_ARGS;
         mz.len = strlen(WAF_MZ_U_ARGS);
@@ -422,6 +425,7 @@ static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
         }
     }
 
+    /* body */
     if (data->request_body.data && data->request_body.len > 0) {
         mz.data = WAF_MZ_U_REQUEST_BODY;
         mz.len = strlen(WAF_MZ_U_REQUEST_BODY);
