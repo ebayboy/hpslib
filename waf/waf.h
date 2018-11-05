@@ -42,8 +42,9 @@ typedef enum {
 } http_method_e;
 
 typedef enum {
-    PARAM_HDR_TYPE = 0,  /* header或者变量 */
-    PARAM_VAR_TYPE = 1   /* MZ<-> header */
+    PARAM_HDR_TYPE = 0,  /* header */
+    PARAM_VAR_TYPE,      /* var */ 
+    PARAM_MZ_TYPE        /* MZ <==> HDR | VAR */
 } param_type_t;
 
 void * waf_data_create(

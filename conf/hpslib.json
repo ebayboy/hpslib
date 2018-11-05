@@ -21,6 +21,11 @@
                 "id": "10022",
                 "mz": "$u_http_cookie",
                 "rx": "a= f b"
+            },
+            {   
+                "id": "10023",
+                "mz": "$u_request_headers",
+                "rx": "12 3"
             }
         ]
     }

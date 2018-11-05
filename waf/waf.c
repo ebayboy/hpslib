@@ -79,8 +79,9 @@ typedef struct {
     str_t cookies;
     str_t request_body;
 
-    list_head_t headers_head;
-    list_head_t vars_head;   /* not used now */
+    list_head_t header_head;
+    list_head_t var_head;   /* not used now */
+    list_head_t mz_head;   /* not used now */
 } waf_data_t;
 
 typedef struct {
@@ -201,6 +202,7 @@ scan_result_e waf_match_unescapted(str_t *str, int *matched_rule_id,  str_t *mz)
     if ((buf = malloc(str->len + 1)) == NULL) {
         return SCAN_ERROR;
     }
+    memset(buf, 0, str->len + 1);
 
     dlen = decodeURI(buf, str->len, str->data, str->len);
     rc = waf_match_match(&waf->waf_match, 
@@ -218,7 +220,7 @@ static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
     waf_param_t *hdr = NULL, *var = NULL;
-    list_for_each_entry(var, &data->vars_head, list) {
+    list_for_each_entry(var, &data->mz_head, list) {
         if (var->key.data == NULL || var->value.data == NULL 
                 || var->value.data == 0 || var->value.len == 0) {
             continue;
@@ -230,7 +232,7 @@ static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
             continue;
         }
 
-        list_for_each_entry(hdr, &data->headers_head, list) {
+        list_for_each_entry(hdr, &data->header_head, list) {
             if (hdr->key.data == NULL || hdr->value.data == NULL 
                     || hdr->key.len == 0 || hdr->value.len == 0) {
                 continue;
@@ -255,11 +257,104 @@ static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
     return rc;
 }
 
+static int waf_match_request_header(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    waf_param_t *hdr = NULL;
+    str_t mz;
+   
+    mz.data = WAF_MZ_REQUEST_HEADERS;
+    mz.len = strlen(WAF_MZ_REQUEST_HEADERS);
+
+    list_for_each_entry(hdr, &data->header_head, list) {
+        if (hdr->key.data == NULL || hdr->value.data == NULL 
+                || hdr->key.len == 0 || hdr->value.len == 0) {
+            continue;
+        }
+
+        /* match ori */
+        rc = waf_match_ori(&hdr->value, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
+static int waf_match_unescapted_request_header(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    waf_param_t *hdr = NULL;
+    str_t mz;
+   
+    mz.data = WAF_MZ_U_REQUEST_HEADERS;
+    mz.len = strlen(WAF_MZ_U_REQUEST_HEADERS);
+
+    list_for_each_entry(hdr, &data->header_head, list) {
+        if (hdr->key.data == NULL || hdr->value.data == NULL 
+                || hdr->key.len == 0 || hdr->value.len == 0) {
+            continue;
+        }
+
+        /* match ori */
+        rc = waf_match_unescapted(&hdr->value, matched_rule_id, &mz);
+        if (rc == SCAN_MATCHED) {
+            return rc;
+        }
+    }
+
+    return rc;
+}
+
+static int waf_match_vars_all(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    waf_param_t *hdr = NULL, *var = NULL;
+
+    list_for_each_entry(var, &data->mz_head, list) {
+        if (var->key.data == NULL || var->value.data == NULL 
+                || var->value.data == 0 || var->value.len == 0) {
+            continue;
+        }
+
+        if (var->key.len > 2 && strncasecmp(var->key.data, 
+                    WAF_MZ_UNESCAPT_PREFIX, 
+                    strlen(WAF_MZ_UNESCAPT_PREFIX)) == 0) {
+            continue;
+        }
+
+        list_for_each_entry(hdr, &data->var_head, list) {
+            if (hdr->key.data == NULL || hdr->value.data == NULL 
+                    || hdr->key.len == 0 || hdr->value.len == 0) {
+                continue;
+            }
+
+            if (hdr->key.len != var->value.len) {
+                continue;
+            }
+
+            if (hdr->key_hash != var->value_hash) {
+                continue;
+            }
+
+            /* match ori */
+            rc = waf_match_ori(&hdr->value, matched_rule_id, &var->key /* mz */);
+            if (rc == SCAN_MATCHED) {
+                return rc;
+            }
+        }
+    }
+
+    return rc;
+}
+
+
 static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
     waf_param_t *hdr = NULL, *var = NULL;
-    list_for_each_entry(var, &data->vars_head, list) {
+    list_for_each_entry(var, &data->mz_head, list) {
         if (var->key.data == NULL || var->value.data == NULL 
                 || var->value.data == 0 || var->value.len == 0) {
             continue;
@@ -276,7 +371,7 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
             continue;
         }
 
-        list_for_each_entry(hdr, &data->headers_head, list) {
+        list_for_each_entry(hdr, &data->header_head, list) {
             if (hdr->key.data == NULL || hdr->value.data == NULL 
                     || hdr->key.len == 0 || hdr->value.len == 0) {
                 continue;
@@ -299,6 +394,52 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
 
     return rc;
 }
+
+static int waf_match_vars_unescapted_all(waf_data_t *data, int *matched_rule_id)
+{
+    int rc = 0;
+    waf_param_t *hdr = NULL, *var = NULL;
+    list_for_each_entry(var, &data->mz_head, list) {
+        if (var->key.data == NULL || var->value.data == NULL 
+                || var->value.data == 0 || var->value.len == 0) {
+            continue;
+        }
+        
+        if (var->key.len <= 2) {
+            continue;
+        }
+
+        /* u_开头 */
+        if (strncasecmp(var->key.data, 
+                    WAF_MZ_UNESCAPT_PREFIX, 
+                    strlen(WAF_MZ_UNESCAPT_PREFIX)) != 0) {
+            continue;
+        }
+
+        list_for_each_entry(hdr, &data->var_head, list) {
+            if (hdr->key.data == NULL || hdr->value.data == NULL 
+                    || hdr->key.len == 0 || hdr->value.len == 0) {
+                continue;
+            }
+
+            if (hdr->key.len != var->value.len) {
+                continue;
+            }
+
+            if (hdr->key_hash != var->value_hash) {
+                continue;
+            }
+
+            rc = waf_match_unescapted(&hdr->value, matched_rule_id, &var->key /* mz */);
+            if (rc == SCAN_MATCHED) {
+                return rc;
+            }
+        }
+    }
+
+    return rc;
+}
+
 
 /* match uri args body */
 static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
@@ -475,18 +616,32 @@ scan_result_e waf_match(void *waf_data, int *matched_rule_id)
     if ((rc = waf_match_headers_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
+    if ((rc = waf_match_vars_all(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
     if ((rc = waf_match_ori_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
-       
+    if ((rc = waf_match_request_header(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
+
     /* escapted */
     if ((rc = waf_match_headers_unescapted_all(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
+    if ((rc = waf_match_vars_unescapted_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
     if ((rc = waf_match_unescapted_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
-       /* decode */
+    if ((rc = waf_match_unescapted_request_header(data, matched_rule_id)) == SCAN_MATCHED) {
+        return rc;
+    }
+
+
+    /* decode */
     if ((rc = waf_match_decode_all(data, matched_rule_id)) == SCAN_MATCHED) {
         return rc;
     }
@@ -508,8 +663,9 @@ void * waf_data_create(
     }
     memset(data, 0, sizeof(waf_data_t));
 
-    INIT_LIST_HEAD(&data->headers_head);
-    INIT_LIST_HEAD(&data->vars_head);
+    INIT_LIST_HEAD(&data->header_head);
+    INIT_LIST_HEAD(&data->mz_head);
+    INIT_LIST_HEAD(&data->var_head);
 
     data->method = method;
 
@@ -542,7 +698,9 @@ int waf_data_add_param(void *waf_data,
         return -1;
     }
 
-    if (type != PARAM_HDR_TYPE && type != PARAM_VAR_TYPE) {
+    if (type != PARAM_HDR_TYPE 
+            && type != PARAM_MZ_TYPE
+            && type != PARAM_VAR_TYPE) {
         log_error("input type error type:%d", type);
         return -1;
     }
@@ -575,12 +733,17 @@ int waf_data_add_param(void *waf_data,
         /* hdr set key hash */
         node->key_hash = waf_hash_strlow(mz_hash_str, node->key.data, node->key.len);  
         node->value_hash = waf_hash_strlow(mz_hash_str, node->value.data, node->value.len);  
-        list_add_tail(&node->list, &data->headers_head);
-    }  else if (type == PARAM_VAR_TYPE) {
+        list_add_tail(&node->list, &data->header_head);
+    }  else if (type == PARAM_MZ_TYPE) {
         /* var set value _hash */
         node->key_hash = waf_hash_strlow(mz_hash_str, node->key.data, node->key.len);  
         node->value_hash = waf_hash_strlow(mz_hash_str, node->value.data, node->value.len);  
-        list_add_tail(&node->list, &data->vars_head);
+        list_add_tail(&node->list, &data->mz_head);
+    } else if (type == PARAM_VAR_TYPE) {
+        /* var set value _hash */
+        node->key_hash = waf_hash_strlow(mz_hash_str, node->key.data, node->key.len);  
+        node->value_hash = waf_hash_strlow(mz_hash_str, node->value.data, node->value.len);  
+        list_add_tail(&node->list, &data->var_head);
     } else {
         return -1;
     }
@@ -608,16 +771,24 @@ void waf_data_show(void *waf_data)
     log_info("request_body:%.*s", data->request_body.len, data->request_body.data);
 
     log_info("\nHeaders:");
-    if (!list_empty(&data->headers_head)) {
-        list_for_each_entry(param, &data->headers_head, list) {
+    if (!list_empty(&data->header_head)) {
+        list_for_each_entry(param, &data->header_head, list) {
             log_info("%.*s:%.*s", param->key.len, param->key.data, 
                     param->value.len, param->value.data);
         }
     }
 
     log_info("\nVars:");
-    if (!list_empty(&data->vars_head)) {
-        list_for_each_entry(param, &data->vars_head, list) {
+    if (!list_empty(&data->var_head)) {
+        list_for_each_entry(param, &data->var_head, list) {
+            log_info("%.*s:%.*s", param->key.len, param->key.data, 
+                    param->value.len, param->value.data);
+        }
+    }
+
+    log_info("\nMZS:");
+    if (!list_empty(&data->mz_head)) {
+        list_for_each_entry(param, &data->mz_head, list) {
             log_info("key: [%.*s] key_hash:[%u]\n: value:[%.*s] value_hash:[%u]", 
                     param->key.len, param->key.data, param->key_hash,
                     param->value.len, param->value.data, param->value_hash);
@@ -652,17 +823,25 @@ static void waf_params_free(waf_data_t *data)
         return ;
     }
 
-    if (!list_empty(&data->headers_head)) {
+    if (!list_empty(&data->header_head)) {
         list_for_each_entry_safe(
-                node, tmp, &data->headers_head, list) {
+                node, tmp, &data->header_head, list) {
             list_del(&node->list);
             waf_param_free(node);
         }
     }
 
-    if (!list_empty(&data->vars_head)) {
+    if (!list_empty(&data->var_head)) {
         list_for_each_entry_safe(
-                node, tmp,  &data->vars_head, list) {
+                node, tmp, &data->var_head, list) {
+            list_del(&node->list);
+            waf_param_free(node);
+        }
+    }
+
+    if (!list_empty(&data->mz_head)) {
+        list_for_each_entry_safe(
+                node, tmp,  &data->mz_head, list) {
             list_del(&node->list);
             waf_param_free(node);
         }
