@@ -9,23 +9,13 @@
         [
             {   
                 "id": "10020",
-                "mz": "$http_referer",
-                "rx": "/etc/(passwd|shadow|rc|boot)"
-            },
-            {   
-                "id": "10021",
-                "mz": "$u_user_agent",
-                "rx": "22 33"
+                "mz": "$u_get_key",
+                "rx": "111"
             },
             {   
                 "id": "10022",
-                "mz": "$u_http_cookie",
-                "rx": "a= f b"
-            },
-            {   
-                "id": "10023",
-                "mz": "$u_request_headers",
-                "rx": "12 3"
+                "mz": "$u_args_value",
+                "rx": "/22 33/(passwd|shadow|rc|boot)"
             }
         ]
     }

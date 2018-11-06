@@ -14,7 +14,7 @@
 #include "waf_match.h"
 #include "waf_config.h"
 
-static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
+match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
 {
     match_t *matcher;
     int i;
@@ -34,6 +34,97 @@ static match_t * find_matcher(waf_match_t *waf_matcher, const char *mz)
     }
 
     return NULL;
+}
+
+static void waf_match_decode_type_set(match_t *matcher)
+{
+#define SET_DECODE_TYPE(x)      \
+    do {        \
+        matcher->do_parse = 1;          \
+        matcher->do_decode = 1;         \
+        matcher->decode_type[x] = x;    \
+    } while(0); 
+
+    if (strcasecmp(matcher->mz, WAF_MZ_U_GET_KEY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(URLDECODE_KEY);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_GET_VALUE) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(URLDECODE_VALUE);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_COOKIE_KEY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(COOKIE_KEY);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_COOKIE_VALUE) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(COOKIE_VALUE);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_ARGS_KEY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_KEY);
+        SET_DECODE_TYPE(XML_KEY);
+        SET_DECODE_TYPE(MULTIPART_KEY);
+        SET_DECODE_TYPE(COOKIE_KEY);
+        SET_DECODE_TYPE(URLDECODE_KEY);
+
+        matcher->do_decode = 0;
+    } else if (strcasecmp(matcher->mz, WAF_MZ_ARGS_VALUE) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_VALUE);
+        SET_DECODE_TYPE(XML_VALUE);
+        SET_DECODE_TYPE(MULTIPART_VALUE);
+        SET_DECODE_TYPE(COOKIE_VALUE);
+        SET_DECODE_TYPE(URLDECODE_VALUE);
+
+        matcher->do_decode = 0;
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_ARGS_KEY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_KEY);
+        SET_DECODE_TYPE(XML_KEY);
+        SET_DECODE_TYPE(MULTIPART_KEY);
+        SET_DECODE_TYPE(COOKIE_KEY);
+        SET_DECODE_TYPE(URLDECODE_KEY);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_ARGS_VALUE) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_VALUE);
+        SET_DECODE_TYPE(XML_VALUE);
+        SET_DECODE_TYPE(MULTIPART_VALUE);
+        SET_DECODE_TYPE(URLDECODE_VALUE);
+        SET_DECODE_TYPE(COOKIE_VALUE);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_POST_KEY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_KEY);
+        SET_DECODE_TYPE(XML_KEY);
+        SET_DECODE_TYPE(MULTIPART_KEY);
+        SET_DECODE_TYPE(URLDECODE_KEY);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_POST_VALUE) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_VALUE);
+        SET_DECODE_TYPE(XML_VALUE);
+        SET_DECODE_TYPE(MULTIPART_VALUE);
+        SET_DECODE_TYPE(URLDECODE_VALUE);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_FILE_NAME) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(MULTIPART_FILENAME);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_FILE_CONTENT) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(MULTIPART_FILECONTENT);
+    } else if (strcasecmp(matcher->mz, WAF_MZ_U_REQUEST_BODY) == 0) {
+        SET_DECODE_TYPE(NORMALDATA);
+        SET_DECODE_TYPE(JSON_KEY);
+        SET_DECODE_TYPE(XML_KEY);
+        SET_DECODE_TYPE(MULTIPART_KEY);
+        SET_DECODE_TYPE(COOKIE_KEY);
+        SET_DECODE_TYPE(URLDECODE_KEY);
+
+        SET_DECODE_TYPE(JSON_VALUE);
+        SET_DECODE_TYPE(XML_VALUE);
+        SET_DECODE_TYPE(MULTIPART_VALUE);
+        SET_DECODE_TYPE(URLDECODE_VALUE);
+        SET_DECODE_TYPE(COOKIE_VALUE);
+
+        SET_DECODE_TYPE(MULTIPART_FILENAME);
+        SET_DECODE_TYPE(MULTIPART_FILECONTENT);
+    }
+#undef SET_DECODE_TYPE
 }
 
 static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_config)
@@ -80,10 +171,17 @@ static int waf_match_add_rules(waf_match_t *waf_matcher, waf_config_t *waf_confi
                 if ((matcher = match_new()) == NULL) {
                     return -1;
                 }
+
+                /* default don't parse && decode */
+                matcher->do_parse = 0;
+                matcher->do_decode = 0;
+
                 strncpy(matcher->mz, ptrim, sizeof(matcher->mz) - 1);
                 matcher->mz_hash = waf_hash_strlow(
                         mz_hash_str, matcher->mz, strlen(matcher->mz));
                 waf_matcher->matchers[waf_matcher->matcher_cursor++] = matcher;
+
+                waf_match_decode_type_set(matcher);
             }
 
             match_add_rule(matcher, rule, ptrim);

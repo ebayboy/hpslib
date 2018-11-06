@@ -1,6 +1,8 @@
 
 变量    适用范围    描述    备注
 
+所有变量不区分大小写， 一律按小写计算
+
 自动匹配
 uri, cookie, args, request_body, request_headers
 
@@ -25,21 +27,31 @@ ok $u_http_user_agent  所有规则    解码后的User_Agent字符串
 ok $u_http_referer 所有规则    解码后的Referer字符串    
 ok $u_request_body 内部规则 & WAF引擎规则  请求body域的所有内容，做了自适应解码    仅支持WAF规则和内部规则
 
-$u_request_headers <==> $U_REQUEST_HEADERS  所有规则    解码后的请求头部域所有字符串     
-ok $U_REQUEST_HEADERS  所有规则    解码后的请求头部域解析，在匹配时循环扫描value    
+ok $u_request_headers <==> $U_REQUEST_HEADERS  所有规则    解码后的请求头部域所有字符串     
+ok $U_REQUEST_HEADERS <==> $u_request_headers  所有规则    解码后的请求头部域解析，在匹配时循环扫描value    
+$u_http_cookie  所有规则    解码后的COOKIE的整个字符串的value值 COOKIE: a=123;b=123;c=123
 
 3. 自适应解码  
 内容格式: multipart/json/xml/url格式
 解码种类html解码/base64解码/gb2312解码
 
 [url格式解码] 
-$u_get_key  内部规则 & WAF引擎规则  自适应解码后的GET的参数key值列表     
-$u_get_value    内部规则 & WAF引擎规则  自适应解码后的GET的参数value值列表，在匹配时循环扫描列表     
+
+[header 部分]
+ok $u_get_key  内部规则 & WAF引擎规则  自适应解码后的GET的参数key值列表     
+ok $u_get_value    内部规则 & WAF引擎规则  自适应解码后的GET的参数value值列表，在匹配时循环扫描列表     
 
 [实现方式: cookie格式分拆]
-$u_cookie_key   内部规则 & WAF引擎规则  自适应解码后的COOKIE的参数key值列表，在匹配时循环扫描列表    
-$u_cookie_value 内部规则 & WAF引擎规则  自适应解码后的COOKIE的参数value值列表，在匹配时循环扫描列表  
-$u_http_cookie  所有规则    解码后的COOKIE的整个字符串的value值 COOKIE: a=123;b=123;c=123
+ok $u_cookie_key   内部规则 & WAF引擎规则  自适应解码后的COOKIE的参数key值列表，在匹配时循环扫描列表    
+ok $u_cookie_value 内部规则 & WAF引擎规则  自适应解码后的COOKIE的参数value值列表，在匹配时循环扫描列表  
+
+
+[body 部分]
+$u_post_key 内部规则 & WAF引擎规则  自适应解码后的POST的参数key值列表，在匹配时循环扫描列表  
+$u_post_value   内部规则 & WAF引擎规则  自适应解码后的POST的参数value值列表，在匹配时循环扫描列表    
+
+$file_name  内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件名     
+$file_content   内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件内容，即：boundary分隔符包含中的内容   
 
 $args_key   内部规则 & WAF引擎规则  GET/POST/COOKIE的参数key值列表，不解码   
 $args_value 内部规则 & WAF引擎规则  GET/POST/COOKIE的参数value值列表，不解码     
@@ -47,11 +59,6 @@ $args_value 内部规则 & WAF引擎规则  GET/POST/COOKIE的参数value值列�
 $u_args_key 内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数key值列表     
 $u_args_value   内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数value值列表   
 
-$u_post_key 内部规则 & WAF引擎规则  自适应解码后的POST的参数key值列表，在匹配时循环扫描列表  
-$u_post_value   内部规则 & WAF引擎规则  自适应解码后的POST的参数value值列表，在匹配时循环扫描列表    
-
-$file_name  内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件名     
-$file_content   内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件内容，即：boundary分隔符包含中的内容   
 
 
 

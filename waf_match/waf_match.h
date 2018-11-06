@@ -4,6 +4,7 @@
 #include "common.h"
 #include "filter.h"
 #include "waf_config.h"
+#include "common_parser.h"
 
 typedef struct {
     waf_engine_e waf_engine;
@@ -28,6 +29,7 @@ int waf_match_match(waf_match_t *waf_matcher,
         size_t blen, 
         int *matched_rule_id);
  
+match_t * find_matcher(waf_match_t *waf_matcher, const char *mz);
 #endif
 
 

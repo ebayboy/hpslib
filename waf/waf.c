@@ -12,52 +12,10 @@
 #include "waf_config.h"
 #include "waf.h"
 
-
-/* mz <==> header */
-/* mz <==> var */
-
-/* 
-var->key   mz 
-var->value  hdr
-*/
-
-/* all mz */
-/* uri */
-#define WAF_MZ_URI                  "$uri"
-#define WAF_MZ_ARGS                 "$args"
-#define wAF_MZ_HTTP_URL             "$url"  /* var */
-#define WAF_MZ_REQUEST_URI          "$request_uri"
-#define WAF_MZ_REQUEST_BODY         "$request_body"
-#define WAF_MZ_HTTP_REFERER         "$http_referer"
-#define WAF_MZ_HTTP_USER_AGENT      "$http_user_agent"
-
-#define WAF_MZ_HTTP_COOKIE          "$http_cookie"
-#define WAF_MZ_REQUEST_HEADERS      "$request_headers"
-
-/* html decode */
-#define WAF_MZ_U_URI                "$u_uri"
-#define WAF_MZ_U_ARGS               "$u_args"
-#define WAF_MZ_U_REQUEST_URI        "$u_request_uri"
-#define WAF_MZ_U_REQUEST_BODY       "$u_request_body"
-#define WAF_MZ_U_HTTP_REFERER       "$u_http_referer"
-#define WAF_MZ_U_HTTP_USER_AGENT    "$u_http_user_agent"
-#define wAF_MZ_U_HTTP_URL           "$u_url"
-#define wAF_MZ_U_HTTP_COOKIE        "$u_http_cookie"
-#define WAF_MZ_U_REQUEST_HEADERS    "$u_request_headers"
-
-/* define decode */
-#define WAF_MZ_ARGS_KEY             "$args_key"
-#define WAF_MZ_ARGS_VALUE           "$args_value"
-#define WAF_MZ_U_COOKIE_KEY         "$u_cookie_key"
-#define WAF_MZ_U_COOKIE_VALUE       "$u_cookie_value"
-#define WAF_MZ_U_ARGS_KEY           "$u_args_key"
-#define WAF_MZ_U_ARGS_VALUE         "$u_args_value"
-#define WAF_MZ_U_POST_KEY           "$u_post_key"
-#define WAF_MZ_U_POST_VALUE         "$u_post_value"
-#define WAF_MZ_U_FILENAME           "$file_name"
-#define WAF_MZ_U_FILE_CONTENT       "$file_content"
-
-#define WAF_MZ_UNESCAPT_PREFIX      "$u_"
+struct passThrough {
+    match_t *matcher;
+    int *matched_rule_id;
+};
 
 typedef struct {
     size_t          len;
@@ -75,13 +33,14 @@ typedef struct {
 typedef struct {
     http_method_e method;
     str_t uri;
+
     str_t args;
     str_t cookies;
     str_t request_body;
 
     list_head_t header_head;
     list_head_t var_head;   /* not used now */
-    list_head_t mz_head;   /* not used now */
+    list_head_t mz_head;    /* user add zone head */
 } waf_data_t;
 
 typedef struct {
@@ -216,6 +175,7 @@ scan_result_e waf_match_unescapted(str_t *str, int *matched_rule_id,  str_t *mz)
     return rc;
 }
 
+/* eg  $user_agent $http_referer */
 static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -257,6 +217,7 @@ static int waf_match_headers_all(waf_data_t *data, int *matched_rule_id)
     return rc;
 }
 
+/* $request_headers */
 static int waf_match_request_header(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -307,6 +268,7 @@ static int waf_match_unescapted_request_header(waf_data_t *data, int *matched_ru
     return rc;
 }
 
+/* eg. $url */
 static int waf_match_vars_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -441,7 +403,7 @@ static int waf_match_vars_unescapted_all(waf_data_t *data, int *matched_rule_id)
 }
 
 
-/* match uri args body */
+/* $uri $args $request_body */
 static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
@@ -490,66 +452,129 @@ static int waf_match_ori_all(waf_data_t *data, int *matched_rule_id)
     return rc;
 }
 
-/* TODO: ? */
 static int ngx_http_waf_match_handler (
         int type,
         char *dec_out,
-        int dec_out_len)
+        int dec_out_len,
+        void *passThrough)
 {
-    int rc = 0;
-#if 0 
-    struct passThrough *pt = (struct passThrough  *)passThrough;
-    waf_context_t *ctx;
     int ret = 0, i;
+    struct passThrough *pt = (struct passThrough *)passThrough;
+    match_t *matcher = pt->matcher;
 
-    if (dec_out == NULL
+    if (passThrough == NULL ||dec_out == NULL
             || dec_out_len <= 0
             || dec_out_len > DECOUT_SIZE_MAX ) {
-        return ret;
+        return -1;
     }
 
-    if ((ctx = waf_ctx_get(pt->r)) == NULL || pt == NULL) {
-        return ret;
-    }
 
     for (i = 0; i < DECODE_TYPE_SIZE; i++) {
-        if (pt->m->decode_type[i] == type) {
-            ret += pt->m->do_match((char*)dec_out, dec_out_len, *pt->set_result);
+        if (matcher->decode_type[i] == type) {
+            if ((ret += match_match(matcher, dec_out, 
+                    dec_out_len, pt->matched_rule_id)) == SCAN_MATCHED) {
+                return ret;
+            }
         }
     }
-#endif
 
-    return rc;
+    return ret;
+}
+
+static int waf_match_decode_get_args(waf_data_t *data, void *pt)
+{
+    int ret = 0;
+    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
+
+    ret += url_decode(
+            data->args.data,
+            data->args.len,
+            ngx_http_waf_match_handler, 
+            pt,
+            do_unbase64,
+            do_unescaped,
+            do_gbk2utf8);
+
+    return ret;
+}
+
+static int waf_match_decode_cookies(waf_data_t *data, void *pt)
+{
+    int ret = 0;
+    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
+
+    ret += cookie_decode(
+            NULL,
+            data->cookies.data,
+            data->cookies.len,
+            ngx_http_waf_match_handler, 
+            pt,
+            do_unbase64,
+            do_unescaped,
+            do_gbk2utf8);
+
+    return ret;
+}
+
+static int waf_match_decode_body(waf_data_t *data, void *pt)
+{
+    int ret = 0;
+    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
+
+    ret += cookie_decode(
+            NULL,
+            data->request_body.data,
+            data->request_body.len,
+            ngx_http_waf_match_handler, 
+            pt,
+            do_unbase64,
+            do_unescaped,
+            do_gbk2utf8);
+
+    return ret;
 }
 
 /* 自适应解码  */
-static waf_match_decode_all(waf_data_t *data, int *matched_rule_id)
+/* $u_get_key $args_key $file_content */
+static int waf_match_decode_all( waf_data_t *data, 
+        int *matched_rule_id, waf_t *waf) 
 {
-    int rc = 0, dlen;
-    unsigned char *decode = NULL;
+    int ret = 0, i;
+    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
+    match_t *matcher = NULL;
+    waf_match_t *waf_matcher = &waf->waf_match;
+    struct passThrough pt;
 
-#if 0
-    /* match u_uri */
-    if (data->uri.data && data->uri.len > 0) {
-        rc = waf_match_match(&waf->waf_match, mz->data, 
-                mz->len, str->data, str->len, matched_rule_id);
-        if (rc == SCAN_MATCHED) {
-            return rc;
+    for (i = 0 ; i < waf_matcher->matcher_cursor; i++ ) { 
+        matcher = waf_matcher->matchers[i];
+        if (matcher == NULL) {
+            continue;
+        }   
+        if (!matcher->do_parse) {
+            continue;
         }
-    }
 
-    ret += ngx_http_waf_data_decode(
-            (char *)cl->buf->pos, 
-            size, 
-            ngx_http_waf_match_handler, 
-            &pt, 
-            NULL, /* content_type */
-            do_unbase64,  
-            do_unescaped,
-            do_gbk2utf8);
-#endif
+        memset(&pt, 0, sizeof(pt));
+        pt.matcher = matcher;
+        pt.matched_rule_id = matched_rule_id;
 
-    return rc;
+        /* args decode */
+        if ((ret = waf_match_decode_get_args(data, &pt)) > 0) {
+            return SCAN_MATCHED;
+        }
+
+        /* cookie decode */
+        if ((ret = waf_match_decode_cookies(data, &pt)) > 0) {
+            return SCAN_MATCHED;
+        }
+
+        /* body decode */
+        if ((ret = waf_match_decode_body(data, &pt)) > 0) {
+            return SCAN_MATCHED;
+        }
+    }   
+
+    return ret;
 }
 
 static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
@@ -579,8 +604,8 @@ static int waf_match_unescapted_all(waf_data_t *data, int *matched_rule_id)
 
     /* cookies */
     if (data->cookies.data && data->cookies.len > 0) {
-        mz.data = wAF_MZ_U_HTTP_COOKIE;
-        mz.len = strlen(wAF_MZ_U_HTTP_COOKIE);
+        mz.data = WAF_MZ_U_HTTP_COOKIE;
+        mz.len = strlen(WAF_MZ_U_HTTP_COOKIE);
         rc = waf_match_unescapted(&data->cookies, matched_rule_id, &mz);
         if (rc == SCAN_MATCHED) {
             return rc;
@@ -640,9 +665,8 @@ scan_result_e waf_match(void *waf_data, int *matched_rule_id)
         return rc;
     }
 
-
     /* decode */
-    if ((rc = waf_match_decode_all(data, matched_rule_id)) == SCAN_MATCHED) {
+    if ((rc = waf_match_decode_all(data, matched_rule_id, waf)) == SCAN_MATCHED) {
         return rc;
     }
 

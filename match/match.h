@@ -8,6 +8,10 @@ typedef struct {
     filter_t *filter;                
     char mz[WAF_RULE_MZ_LEN];  
     unsigned int mz_hash;
+    unsigned int decode_type[DECODE_TYPE_SIZE];
+
+    int do_parse;
+    int do_decode;
 } match_t;
 
 match_t * match_new();
