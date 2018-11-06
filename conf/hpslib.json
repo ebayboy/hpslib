@@ -8,14 +8,9 @@
         "Rules": 
         [
             {   
-                "id": "10020",
-                "mz": "$u_get_key",
-                "rx": "111"
-            },
-            {   
                 "id": "10022",
                 "mz": "$u_args_value",
-                "rx": "/22 33/(passwd|shadow|rc|boot)"
+                "rx": "22 33"
             }
         ]
     }

@@ -462,7 +462,8 @@ static int ngx_http_waf_match_handler (
     struct passThrough *pt = (struct passThrough *)passThrough;
     match_t *matcher = pt->matcher;
 
-    if (passThrough == NULL ||dec_out == NULL
+    if (passThrough == NULL 
+            || dec_out == NULL
             || dec_out_len <= 0
             || dec_out_len > DECOUT_SIZE_MAX ) {
         return -1;
@@ -481,7 +482,7 @@ static int ngx_http_waf_match_handler (
     return ret;
 }
 
-static int waf_match_decode_get_args(waf_data_t *data, void *pt)
+static int waf_match_decode_get_args(match_t *matcher, waf_data_t *data, void *pt)
 {
     int ret = 0;
     int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
@@ -491,17 +492,16 @@ static int waf_match_decode_get_args(waf_data_t *data, void *pt)
             data->args.len,
             ngx_http_waf_match_handler, 
             pt,
-            do_unbase64,
-            do_unescaped,
-            do_gbk2utf8);
+            matcher->do_decode, /* do_unbase64, */
+            matcher->do_decode, /* do_unescaped, */
+            matcher->do_decode); /* do_gbk2utf8); */
 
     return ret;
 }
 
-static int waf_match_decode_cookies(waf_data_t *data, void *pt)
+static int waf_match_decode_cookies(match_t *matcher, waf_data_t *data, void *pt)
 {
     int ret = 0;
-    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
 
     ret += cookie_decode(
             NULL,
@@ -509,17 +509,16 @@ static int waf_match_decode_cookies(waf_data_t *data, void *pt)
             data->cookies.len,
             ngx_http_waf_match_handler, 
             pt,
-            do_unbase64,
-            do_unescaped,
-            do_gbk2utf8);
+            matcher->do_decode, /* do_unbase64, */
+            matcher->do_decode, /* do_unescaped, */
+            matcher->do_decode); /* do_gbk2utf8); */
 
     return ret;
 }
 
-static int waf_match_decode_body(waf_data_t *data, void *pt)
+static int waf_match_decode_body(match_t *matcher, waf_data_t *data, void *pt)
 {
     int ret = 0;
-    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
 
     ret += cookie_decode(
             NULL,
@@ -527,9 +526,9 @@ static int waf_match_decode_body(waf_data_t *data, void *pt)
             data->request_body.len,
             ngx_http_waf_match_handler, 
             pt,
-            do_unbase64,
-            do_unescaped,
-            do_gbk2utf8);
+            matcher->do_decode, /* do_unbase64, */
+            matcher->do_decode, /* do_unescaped, */
+            matcher->do_decode); /* do_gbk2utf8); */
 
     return ret;
 }
@@ -540,16 +539,15 @@ static int waf_match_decode_all( waf_data_t *data,
         int *matched_rule_id, waf_t *waf) 
 {
     int ret = 0, i;
-    int do_unbase64 = 1, do_unescaped = 1, do_gbk2utf8 = 1;
     match_t *matcher = NULL;
     waf_match_t *waf_matcher = &waf->waf_match;
     struct passThrough pt;
 
     for (i = 0 ; i < waf_matcher->matcher_cursor; i++ ) { 
-        matcher = waf_matcher->matchers[i];
-        if (matcher == NULL) {
+        if ((matcher = waf_matcher->matchers[i]) == NULL) {
             continue;
         }   
+
         if (!matcher->do_parse) {
             continue;
         }
@@ -559,17 +557,17 @@ static int waf_match_decode_all( waf_data_t *data,
         pt.matched_rule_id = matched_rule_id;
 
         /* args decode */
-        if ((ret = waf_match_decode_get_args(data, &pt)) > 0) {
+        if ((ret = waf_match_decode_get_args(matcher, data, &pt)) > 0) {
             return SCAN_MATCHED;
         }
 
         /* cookie decode */
-        if ((ret = waf_match_decode_cookies(data, &pt)) > 0) {
+        if ((ret = waf_match_decode_cookies(matcher, data, &pt)) > 0) {
             return SCAN_MATCHED;
         }
 
         /* body decode */
-        if ((ret = waf_match_decode_body(data, &pt)) > 0) {
+        if ((ret = waf_match_decode_body(matcher, data, &pt)) > 0) {
             return SCAN_MATCHED;
         }
     }   
