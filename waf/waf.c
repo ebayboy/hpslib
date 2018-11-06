@@ -518,14 +518,14 @@ static int waf_match_decode_cookies(match_t *matcher, waf_data_t *data, void *pt
 
 static int waf_match_decode_body(match_t *matcher, waf_data_t *data, void *pt)
 {
-    int ret = 0;
+    int ret = 0, content_type = DATA_TYPE_UNKNOWN;
 
-    ret += cookie_decode(
-            NULL,
+    ret += ngx_http_waf_data_decode(
             data->request_body.data,
             data->request_body.len,
             ngx_http_waf_match_handler, 
-            pt,
+            pt, 
+            &content_type, /* content_type,  */
             matcher->do_decode, /* do_unbase64, */
             matcher->do_decode, /* do_unescaped, */
             matcher->do_decode); /* do_gbk2utf8); */

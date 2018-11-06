@@ -47,17 +47,19 @@ ok $u_cookie_value 内部规则 & WAF引擎规则  自适应解码后的COOKIE�
 
 
 [body 部分]
-$u_post_key 内部规则 & WAF引擎规则  自适应解码后的POST的参数key值列表，在匹配时循环扫描列表  
-$u_post_value   内部规则 & WAF引擎规则  自适应解码后的POST的参数value值列表，在匹配时循环扫描列表    
+ok $u_post_key 内部规则 & WAF引擎规则  自适应解码后的POST的参数key值列表，在匹配时循环扫描列表  
+ok $u_post_value   内部规则 & WAF引擎规则  自适应解码后的POST的参数value值列表，在匹配时循环扫描列表    
 
+ok $args_key   内部规则 & WAF引擎规则  GET/POST/COOKIE的参数key值列表，不解码   
+ok $args_value 内部规则 & WAF引擎规则  GET/POST/COOKIE的参数value值列表，不解码     
+
+ok $u_args_key 内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数key值列表     
+ok $u_args_value   内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数value值列表   
+
+[暂时无法模拟测试]
 $file_name  内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件名     
 $file_content   内部规则 & WAF引擎规则  自适应解码后的文件上传内容中的文件内容，即：boundary分隔符包含中的内容   
 
-$args_key   内部规则 & WAF引擎规则  GET/POST/COOKIE的参数key值列表，不解码   
-$args_value 内部规则 & WAF引擎规则  GET/POST/COOKIE的参数value值列表，不解码     
-
-$u_args_key 内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数key值列表     
-$u_args_value   内部规则 & WAF引擎规则  自适应解码后的GET/POST/COOKIE的参数value值列表   
 
 
 
