@@ -315,19 +315,19 @@ static int waf_match_vars_all(waf_data_t *data, int *matched_rule_id)
 static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_id)
 {
     int rc = 0;
-    waf_param_t *hdr = NULL, *var = NULL;
-    list_for_each_entry(var, &data->mz_head, list) {
-        if (var->key.data == NULL || var->value.data == NULL 
-                || var->value.data == 0 || var->value.len == 0) {
+    waf_param_t *hdr = NULL, *mz = NULL;
+    list_for_each_entry(mz, &data->mz_head, list) {
+        if (mz->key.data == NULL || mz->value.data == NULL 
+                || mz->value.data == 0 || mz->value.len == 0) {
             continue;
         }
         
-        if (var->key.len <= 2) {
+        if (mz->key.len <= 2) {
             continue;
         }
 
         /* u_开头 */
-        if (strncasecmp(var->key.data, 
+        if (strncasecmp(mz->key.data, 
                     WAF_MZ_UNESCAPT_PREFIX, 
                     strlen(WAF_MZ_UNESCAPT_PREFIX)) != 0) {
             continue;
@@ -339,15 +339,15 @@ static int waf_match_headers_unescapted_all(waf_data_t *data, int *matched_rule_
                 continue;
             }
 
-            if (hdr->key.len != var->value.len) {
+            if (hdr->key.len != mz->value.len) {
                 continue;
             }
 
-            if (hdr->key_hash != var->value_hash) {
+            if (hdr->key_hash != mz->value_hash) {
                 continue;
             }
 
-            rc = waf_match_unescapted(&hdr->value, matched_rule_id, &var->key /* mz */);
+            rc = waf_match_unescapted(&hdr->value, matched_rule_id, &mz->key /* mz */);
             if (rc == SCAN_MATCHED) {
                 return rc;
             }
