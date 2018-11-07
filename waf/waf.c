@@ -51,11 +51,11 @@ typedef struct {
 
 static waf_t *waf = NULL;
 
-static int waf_logger_init(const char *logfile, waf_t *waf)
+static int waf_logger_init(const char *logfile, FILE **log_fp)
 {
     FILE *fp = NULL;
 
-    if (logfile == NULL || waf == NULL) {
+    if (logfile == NULL || log_fp == NULL) {
         return -1;
     }
 
@@ -63,9 +63,9 @@ static int waf_logger_init(const char *logfile, waf_t *waf)
         return -1;
     }
 
-    waf->log_fp = fp;
+    *log_fp = fp;
 
-    log_set_fp(waf->log_fp);
+    log_set_fp(*log_fp);
 #ifndef DEBUG
     log_set_quiet(1);
 #endif
@@ -97,7 +97,7 @@ int waf_init(const char *logfile, const char *waf_config_name)
         }
     }
 
-    if (waf_logger_init(logfile, waf) == -1) {
+    if (waf_logger_init(logfile, &waf->log_fp) == -1) {
         goto error;
     }
 
