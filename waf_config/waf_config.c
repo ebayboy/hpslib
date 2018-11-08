@@ -19,46 +19,6 @@
 #include "waf_config.h"
 #include "log.h"
 
-static int waf_config_init_demo(const char *filename)
-{
-    //用char* 模拟一个JSON字符串
-    char* json_string = "{\"test_1\":\"0\", \"test_2\":\"1\", \"test_3\":\"2\"}";
-
-    log_info("filename:[%s]\n", filename);
-
-    log_info("json_string:[%s]\n", json_string);
-
-    //JSON字符串到cJSON格式
-    cJSON* root = cJSON_Parse(json_string); 
-    //判断cJSON_Parse函数返回值确定是否打包成功
-    if(root == NULL){
-        log_info("Error: json pack into root error...");
-        return -1;
-    } else{//打包成功调用cJSON_Print打印输出
-        cJSON_Print(root);
-    }
-
-    //获取字段值
-    //cJSON_GetObjectItem返回的是一个cJSON结构体所以我们可以通过函数返回结构体的方式选择返回类型！
-    cJSON * test_1 = cJSON_GetObjectItem(root,"test_1");
-    cJSON * test_2 = cJSON_GetObjectItem(root,"test_2");
-    cJSON * test_3 = cJSON_GetObjectItem(root,"test_3");
-
-    //打印输出
-    if (test_1) {
-        log_info("test_1:%s\n",test_1->valuestring);
-    }
-    if (test_2) {
-        log_info("test_2:%s\n",test_2->valuestring);
-    }
-    if (test_3) {
-        log_info("test_3:%s\n",test_3->valuestring);
-    }
-
-    //delete root
-    cJSON_Delete(root);
-}
-
 static int waf_config_init_secrule(cJSON *root, waf_config_t *waf)
 {
     cJSON *secrule_root, *rules, *rule, *rule_it;
@@ -157,14 +117,7 @@ int waf_config_init(const char *filename, waf_config_t *waf)
         goto out;
     }
 
-#ifdef DEBUG
-    if ((rc = waf_config_init_demo(filename)) != 0) {
-        ret = -1;
-        goto out;
-    }
-#endif
-
-    log_info("temp:[%s]\n", temp);
+    log_info("config :[%s]\n", temp);
 
     if ((root = cJSON_Parse(temp)) == NULL) {
         ret = -1;
