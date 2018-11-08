@@ -171,6 +171,7 @@ int waf_config_init(const char *filename, waf_config_t *waf)
         goto out;
     }
 
+#if 0
     if ((it = cJSON_GetObjectItem(root,"WafEngine")) != NULL) {
         if (strcasecmp(it->valuestring, "on") == 0) {
             waf->waf_engine = WAF_ENGINE_ON;
@@ -194,6 +195,7 @@ int waf_config_init(const char *filename, waf_config_t *waf)
     if ((it = cJSON_GetObjectItem(root,"WafId")) != NULL) {
         strncpy(waf->waf_id, it->valuestring, sizeof(waf->waf_id) - 1);
     }
+#endif
 
     if ((rc = waf_config_init_secrule(root, waf)) != 0) {
         ret = -1;
