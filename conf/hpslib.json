@@ -9,8 +9,8 @@
         [
             {   
                 "id": "10022",
-                "mz": "$args_value",
-                "rx": "2233"
+                "mz": "$uri",
+                "rx": "fanpf"
             }
         ]
     }
