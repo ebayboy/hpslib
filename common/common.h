@@ -134,4 +134,14 @@ unsigned int waf_hash_strlow(
         const unsigned char *src, 
         size_t n);
 
+/**
+ * @buflen - out
+ * @buf - out
+ * @filename - in 
+ **/
+int fread_file(const char *filename, 
+        unsigned char **buf, int *buflen);
+
 #endif
+
+

@@ -6,6 +6,8 @@
  **/
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "common.h"
 
@@ -17,9 +19,9 @@ long fsize(FILE *fp)
     fseek(fp, 0, SEEK_END);
     n = ftell(fp);
     fsetpos(fp,&fpos); 
+
     return n;
 }
-
 
 void strim(char *str)
 {
@@ -66,4 +68,46 @@ unsigned int waf_hash_strlow(
     }
 
     return key;
+}
+
+int fread_file(const char *filename, unsigned char **buf, int *buflen)
+{
+    FILE *fp = NULL;
+    unsigned char *temp = NULL;
+    size_t fsize = 0;
+    fpos_t fpos; 
+
+    if (filename == NULL || buf == NULL  || buflen == NULL) {
+        return -1;
+    }
+
+    if ((fp = fopen(filename, "r")) == NULL) {
+        return -1;
+    }
+
+    fgetpos(fp, &fpos); 
+    fseek(fp, 0, SEEK_END);
+    if ((fsize = ftell(fp)) == -1) {
+        fclose(fp);
+        return -1;
+    }
+    fsetpos(fp,&fpos); 
+
+    if ((temp = (char*)malloc(fsize + 1)) == NULL) {
+        fclose(fp);
+        return -1;
+    }
+    memset(temp, 0, sizeof(temp));
+
+    if (fread(temp, fsize, 1, fp) != 1) {
+        fclose(fp);
+        return -1;
+    }
+
+    *buf = temp;
+    *buflen = fsize;
+
+    fclose(fp);
+
+    return 0;
 }
